@@ -70,6 +70,13 @@ void GameEntity::SetWorldPos()
 	glm::mat4 myRot = glm::yawPitchRoll(transform.rotation.y, transform.rotation.x, transform.rotation.z);
 
 	worldPos = myTrans * myRot * myScale;
+
+	if (parent != nullptr) {
+		worldPos = parent->worldPos * worldPos;
+	}
+	if (camParent != nullptr) {
+		worldPos = camParent->viewMatrix * worldPos;
+	}
 }
 void GameEntity::ResetGameEntity()
 {

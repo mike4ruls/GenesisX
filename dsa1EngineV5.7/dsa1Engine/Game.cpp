@@ -79,11 +79,13 @@ void Game::CreateMeshes()
 	gameobj[4]->objMesh.specular = { 4,4,4,4 };
 	gameobj[4]->Translate(0, 0, 1);
 	gameobj[4]->Rotate(0, 45, 0);
-	gameobj[4]->Scale(0.1f);
+	//gameobj[4]->Scale(0.1f);
+	gameobj[4]->parent = gameobj[3];
 
 	gameobj[5]->objMesh.specular = { 11,11,11,11 };
 	gameobj[5]->Rotate(0, 1.5, 0);
 	gameobj[5]->Scale(0.1f);
+	
 }
 
 //bool Game::CanRenderLights(GameEntity obj, Light light)
@@ -139,19 +141,19 @@ void Game::Update(GLuint program)
 	}
 	if (input->IsKeyDown(GLFW_KEY_0))
 	{
-		light1.myLight.ambient = { 0.0f,0.0f,0.0f,1.0f };
+		light1.myLight.color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_1))
 	{
-		light1.myLight.ambient = { 5.0f,0.0f,0.0f,1.0f };
+		light1.myLight.color = { 1.0f,0.0f,0.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_2))
 	{
-		light1.myLight.ambient = { 0.0f,5.0f,0.0f,1.0f };
+		light1.myLight.color = { 0.0f,1.0f,0.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_3))
 	{
-		light1.myLight.ambient = { 0.0f,0.0f,5.0f,1.0f };
+		light1.myLight.color = { 0.0f,0.0f,1.0f,1.0f };
 	}
 
 
@@ -182,7 +184,7 @@ void Game::Update(GLuint program)
 
 	glUniform3f(9, light1.myLight.lightPos.x, light1.myLight.lightPos.y, light1.myLight.lightPos.z);
 	glUniform1f(11, light1.myLight.lightIntensity);
-	glUniform4f(12, light1.myLight.ambient.x, light1.myLight.ambient.y, light1.myLight.ambient.z, light1.myLight.ambient.w);
+	glUniform4f(12, light1.myLight.color.x, light1.myLight.color.y, light1.myLight.color.z, light1.myLight.color.w);
 
 	rend->Update(program);
 }

@@ -105,3 +105,9 @@ out pretty well
 -Added TONS of Skyboxes
 -Can swap between Sky Boxes at will with TAB
 -Optimized, draws the Sky Box last after everything else is done rendering
+
+===Version 5.7=== 4/21/17
+-Added object parenting, child moves with parent object
+-Fixed Lighting calculations
+-Changed light values
+-Getting ready to implement Deffered Rendering

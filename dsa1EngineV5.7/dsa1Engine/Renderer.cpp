@@ -6,13 +6,11 @@ Renderer::Renderer(Camera *c, ShaderManager& man)
 {
 	cam = c;
 	shaderM = &man;
-	lightPos = glm::vec3(-10,10,2);
 	glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
 	currentSky = 0;
 
 	SkyBoxModel = GameEntity("skybox", "models/box.obj", this);
 	RemoveFromRenderer(SkyBoxModel.rendID);
-	//SkyBoxModel.Scale(2);
 	LoadAllSkyBoxes();
 
 
@@ -28,14 +26,11 @@ void Renderer::Update(GLuint program)
 {
 	// clearing the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	//gameObjs[5]->camParent = cam;
 	for(unsigned int i = 0; i < gameObjs.size(); i++)
 	{
 		// rendering game object
 		float time = Engine::time.t;
-		//GLuint MatrixID = glGetUniformLocation(program, "worldPos");
-		//glUseProgram(program);
-
 
 		glUniformMatrix4fv(4, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
 		glUniform1f(7, time);
@@ -59,22 +54,7 @@ void Renderer::Update(GLuint program)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
-		glDepthMask(GL_FALSE);
-	glUseProgram(shaderM->skyProgram);
-	glDisable(GL_CULL_FACE);
-	glm::mat4 view = glm::mat4(glm::mat3(cam->viewMatrix));
-	glUniformMatrix4fv(1, 1, GL_FALSE, &view[0][0]);
-	glUniformMatrix4fv(2, 1, GL_FALSE, &cam->ProjectMatrix[0][0]);
-	glBindVertexArray(SkyBoxModel.GetVertArr());
-	glBindTexture(GL_TEXTURE_CUBE_MAP, Skybox);
-	glDepthFunc(GL_LEQUAL);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
-	glDepthMask(GL_TRUE);
-	glUseProgram(shaderM->regProgram);
-	glEnable(GL_CULL_FACE);
-	glDepthFunc(GL_LESS);
+	DrawSkyBox();
 }
 
 unsigned int Renderer::AddToRenderer(GameEntity &obj)
@@ -188,5 +168,25 @@ void Renderer::LoadAllSkyBoxes()
 	faces.push_back("SkyBox/default/front.jpg");
 	loadedSkyBoxes.push_back(loadCubeMap(faces));
 	faces.clear();
+}
+
+void Renderer::DrawSkyBox()
+{
+	glDepthMask(GL_FALSE);
+	glUseProgram(shaderM->skyProgram);
+	glDisable(GL_CULL_FACE);
+	glm::mat4 view = glm::mat4(glm::mat3(cam->viewMatrix));
+	glUniformMatrix4fv(1, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(2, 1, GL_FALSE, &cam->ProjectMatrix[0][0]);
+	glBindVertexArray(SkyBoxModel.GetVertArr());
+	glBindTexture(GL_TEXTURE_CUBE_MAP, Skybox);
+	glDepthFunc(GL_LEQUAL);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthMask(GL_TRUE);
+	glUseProgram(shaderM->regProgram);
+	glEnable(GL_CULL_FACE);
+	glDepthFunc(GL_LESS);
 }
 

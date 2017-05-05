@@ -44,6 +44,11 @@ void Camera::SetView()
 	camCenter = camPos + (rotMat * glm::vec3(0, 0, -1));
 	up = rotMat * glm::vec3(0, 1, 0);
 
+	glm::mat4 myTrans = glm::translate(camPos);
+	glm::mat4 myRot = glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
+
+	worldPos = myTrans * myRot;
+
 	viewMatrix = glm::lookAt(camPos, camCenter, up);
 }
 

@@ -10,7 +10,7 @@ struct Light{
 
 layout (location = 10) uniform bool hasT;
 layout (location = 11) uniform float lightIntensity;
-layout (location = 12) uniform vec4 Ambient;
+layout (location = 12) uniform vec4 lightCol;
 layout (location = 13) uniform vec4 Spec;
 layout (location = 14) uniform float lightRad;
 layout (location = 15) uniform Light lig[];
@@ -34,8 +34,8 @@ void main()
 {
 	const Light lights[] = lig;
 	vec4 color;
-	//color = vec4(1,0,0,1);
 	color = input.color;
+	//color = vec4(1,0,0,1);
 	//color = vec4(input.fragPos.xy,0.5+0.5*sin(time),1);
 	//color = vec4(input.color.xy,input.color.z+1.0*cos(input.time),1);
 
@@ -57,22 +57,20 @@ void main()
 	{
 		float fade = (lightRad - dist) / lightRad; 
 
-		vec4 L = input.lightPos - input.pos ;
-		vec4 E = input.pos - input.camPos;
-		vec4 H =  L+E;
-
-		// SpotLight effect
-		//float light =  clamp(dot(-L,input.norm),0.0, lightIntensity);
+		vec4 L = normalize(input.lightPos - input.pos) ;
+		vec4 E = normalize(input.camPos - input.pos);
+		vec4 H =  normalize(L+E);
 
 		// light intensity based on distance from light
-		float light =   clamp(dot(L,input.norm),0.0,lightIntensity*fade);
-		vec4 Specular = (Spec * color) * max(dot(H, input.norm),0.0);
+		float ambience = 0.1;
+		float diffuse = clamp(dot(L,input.norm),0.0,lightIntensity*fade);
+		float specular = pow(max(dot(H, input.norm),0.0), 16);
 
-		vec4 brightness = (Ambient + Specular) * light;
+		float lightIntensity =  ambience + diffuse + specular;
+		 
+		vec4 lighting = lightCol * lightIntensity;
 
-		//color = brightness;
-		color += brightness;
-		//color = input.norm;
+		color += vec4(color.rgb * lighting.rgb, color.a);
 	}
 
 	gl_FragColor = color;

@@ -10,6 +10,8 @@ class GameEntity
 	:Object
 {
 public:
+	GameEntity* parent = nullptr;
+	Camera* camParent = nullptr;
 	GameEntity();
 	GameEntity(void *r);
 	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r);

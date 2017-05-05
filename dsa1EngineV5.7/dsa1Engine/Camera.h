@@ -19,6 +19,7 @@ public:
 	glm::vec3 up;
 	glm::mat3 rotMat;
 
+	glm::mat4 worldPos;
 	glm::mat4 viewMatrix;
 	glm::mat4 ProjectMatrix;
 

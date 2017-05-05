@@ -42,7 +42,7 @@ Mesh::Mesh(std::vector<Vertex> &v)
 		sizeof(glm::vec3), // stride
 		0); // the offset 
 	glBindVertexArray(0);
-	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
+	specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 Mesh::Mesh(std::string filename)
 {
@@ -156,7 +156,17 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 			newVert.uv = uv[moreInd[i].uvInd - 1];
 			newVert.normal = nor[moreInd[i].normInd - 1];
 			newVert.color = { 0.5f,0.5f,0.5f,1.0f };
+			
 			vertBufData.push_back(newVert);
+			/*if ((i + 1) % 3 == 0) {
+				glm::vec3 totNorm = { 0,0,0 };
+				for (int j = 2; j >= 0; j--) {
+					totNorm += vertBufData[i - j].normal;
+				}
+				for (int j = 2; j >= 0; j--) {
+					vertBufData[i - j].normal = glm::normalize(totNorm);
+				}
+			}*/
 	}
 	verts = vertBufData;
 	// generating buffer and storing their addresses to out init variables
@@ -231,6 +241,7 @@ void Mesh::CreateBuffer()
 		sizeof(Vertex)*count,
 		&vertBufData[0],
 		GL_STATIC_DRAW);
+
 
 	// letting the computer know how the buffer is structured
 	glEnableVertexAttribArray(0);

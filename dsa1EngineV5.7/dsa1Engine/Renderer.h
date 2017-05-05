@@ -18,11 +18,11 @@ public:
 	void ChangeSkyBox();
 	GLuint loadCubeMap(std::vector<const GLchar*> faces);
 	void LoadAllSkyBoxes();
+	void DrawSkyBox();
 
 	int currentSky;
 	ShaderManager* shaderM;
 	Camera* cam;
-	glm::vec3 lightPos;
 	GameEntity SkyBoxModel;
 	std::vector<GLuint> loadedSkyBoxes;
 	GLuint Skybox;

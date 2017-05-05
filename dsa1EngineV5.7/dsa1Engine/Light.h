@@ -9,7 +9,7 @@ public:
 	struct LightAttr{
 		glm::vec3 lightPos;
 		glm::vec3 lightDir;
-		glm::vec4 ambient;
+		glm::vec4 color;
 		float lightIntensity;
 		float lightRadius;
 	}myLight;
