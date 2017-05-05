@@ -21,7 +21,7 @@ Camera::Camera(GLFWwindow &w, InputManager &ip)
 
 	sprintSpeed = 3.0f;
 
-	camPos = {0,0,2};
+	camPos = {0,2,15};
 	camRot = {0,0,0};
 
 	glfwGetWindowSize(window, &width, &height);
@@ -76,7 +76,7 @@ void Camera::UpdateCam(float dt)
 {
 	if (input->IsMouseClick(GLFW_MOUSE_BUTTON_1))
 	{
-		printf("Mouse CLICKUUUUUU");
+		//printf("Mouse CLICKUUUUUU");
 		currentMouseClick = true;
 	}
 	if (currentMouseClick == true && previousMouseClick == false)

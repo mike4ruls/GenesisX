@@ -12,10 +12,9 @@ public:
 		glm::vec4 color;
 		float lightIntensity;
 		float lightRadius;
+		GLfloat linear;
+		GLfloat quadratic;
 	}myLight;
-	
-	float sphereSize;
-
 
 	GameEntity* sphere;
 private:

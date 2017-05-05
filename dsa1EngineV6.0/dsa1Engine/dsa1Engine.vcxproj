@@ -186,15 +186,21 @@
     <ClInclude Include="VertInd.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fShader.glsl" />
-    <None Include="shaders\geometryShader.glsl" />
-    <None Include="shaders\geometryVShader.glsl" />
-    <None Include="shaders\instanceVShader.glsl" />
-    <None Include="shaders\lightingShader.glsl" />
-    <None Include="shaders\lightingVShader.glsl" />
-    <None Include="shaders\skyBoxPShader.glsl" />
-    <None Include="shaders\skyBoxVShader.glsl" />
-    <None Include="shaders\vShader.glsl" />
+    <None Include="ClassDiagram.cd" />
+    <None Include="shaders\DeferredShading\ambientPShader.glsl" />
+    <None Include="shaders\DeferredShading\ambientVShader.glsl" />
+    <None Include="shaders\DeferredShading\geometryPShader.glsl" />
+    <None Include="shaders\DeferredShading\geometryVShader.glsl" />
+    <None Include="shaders\DeferredShading\lightPShader.glsl" />
+    <None Include="shaders\DeferredShading\lightVShader.glsl" />
+    <None Include="shaders\DeferredShading\nullP.glsl" />
+    <None Include="shaders\DeferredShading\nullV.glsl" />
+    <None Include="shaders\InstanceShading\instancePShader.glsl" />
+    <None Include="shaders\InstanceShading\instanceVShader.glsl" />
+    <None Include="shaders\RegularShading\fShader.glsl" />
+    <None Include="shaders\RegularShading\vShader.glsl" />
+    <None Include="shaders\SkyBoxShading\skyBoxPShader.glsl" />
+    <None Include="shaders\SkyBoxShading\skyBoxVShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

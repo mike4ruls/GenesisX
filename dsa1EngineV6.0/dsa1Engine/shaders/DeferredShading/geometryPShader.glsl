@@ -1,8 +1,8 @@
 #version 430
 
-layout (location = 0) out vec4 textCol;
-layout (location = 1) out vec4 textNorm;
-layout (location = 2) out vec4 worldPos;
+layout (location = 0) out vec3 textCol;
+layout (location = 1) out vec3 textNorm;
+layout (location = 2) out vec3 worldPos;
 layout (location = 11) uniform bool hasT;
 uniform sampler2D myTexture;
 
@@ -27,8 +27,8 @@ void main()
 	{
 		newcolor = texture(myTexture, input.uv);
 	}
-	//newcolor = newcolor / 2;
-	textCol = newcolor;
-	textNorm = input.norm;
-	worldPos = input.fragPos;
+	//newcolor = newcolor;
+	textCol = newcolor.xyz;
+	textNorm = input.norm.xyz;
+	worldPos = input.pos.xyz;
 }

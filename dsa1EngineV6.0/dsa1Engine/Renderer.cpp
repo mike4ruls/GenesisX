@@ -6,7 +6,8 @@ Renderer::Renderer(Camera *c, ShaderManager& man)
 {
 	cam = c;
 	shaderM = &man;
-	glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
+	//glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	currentSky = 0;
 
 	SkyBoxModel = GameEntity("skybox", "models/box.obj", this);

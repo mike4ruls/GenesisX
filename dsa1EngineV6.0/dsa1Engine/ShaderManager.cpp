@@ -7,7 +7,7 @@ ShaderManager::ShaderManager()
 	regProgram = 0;
 	skyProgram = 0;
 	geoProgram = 0;
-	lightProgram = 0;
+	ligProgram = 0;
 }
 
 

@@ -16,7 +16,9 @@ public:
 	bool gameLoop();
 	bool useShader();
 	GLuint CreateGeometryBuffer();
-	void LightinPass();
+	void AmbientPass();
+	void StencilePass();
+	void LightingPass();
 
 
 	int width;
@@ -27,7 +29,10 @@ public:
 	GLuint colText;
 	GLuint normText;
 	GLuint worldText;
+	GLuint finText;
+	GLuint stenText;
 	GLuint depthBuffer;
+	GLuint vaoQuad;
 	InputManager input;
 
 	static void Start();

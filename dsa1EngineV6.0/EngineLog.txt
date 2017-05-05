@@ -123,3 +123,15 @@ out pretty well
 =Bugs=
 -Having a hard time go about lighting certain pixels if they are being hit by a light
 -As of now it only outputs regular textures with no lighting
+
+===Version 6.0=== 5/03/17
+-FINALLY DONE WITH THIS SHIT
+-Deferred rendering implemented
+-Code is pretty shitty right now, need to clean up
+-g_Buffer holds:
+	~The color texture
+	~The normal texture
+	~The frag position texture
+	~The final texture
+-Almost used a stencil buffer, developed my own approach
+-Modified Shaders to handle different graphics cards and not break

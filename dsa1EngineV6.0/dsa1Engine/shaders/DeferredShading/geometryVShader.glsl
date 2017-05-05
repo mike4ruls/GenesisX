@@ -32,7 +32,7 @@ void main()
 
 		input.pos = modelWorld * vec4(Input.position, 1);
 		input.fragPos = worldViewProj * vec4(Input.position, 1);
-		input.norm = transpose(inverse(modelWorld))*norm;
+		input.norm = modelWorld*norm;
 		input.norm = normalize(input.norm);
 		input.uv = Input.uv;
 		input.color = Input.color;

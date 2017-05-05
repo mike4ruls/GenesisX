@@ -11,7 +11,7 @@ public:
 	void CreateMeshes();
 	//bool CanRenderLights(GameEntity obj, Light light);
 	void Update(GLuint program);
-	void LightingPass();
+	void LightingPass(glm::vec3 camPos);
 
 	InputManager *input;
 	Renderer* rend;

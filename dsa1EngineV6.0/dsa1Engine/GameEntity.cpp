@@ -54,8 +54,8 @@ GameEntity::~GameEntity()
 }
 void GameEntity::Update()
 {
-	printf("updating at time %f\n", Engine::time.t);
-	printf("Rendering %s", &tag[0]);
+	//printf("updating at time %f\n", Engine::time.t);
+	//printf("Rendering %s", &tag[0]);
 	if(applyGrav)
 	{
 		ApplyGravity();
