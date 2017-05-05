@@ -1,0 +1,24 @@
+===Version 1.0===
+-The start of an Open GL engine
+-Created Window
+
+===Version 1.1===
+-Draws vertices to the screen
+
+===Version 2.0===
+-Added new clases:
+ ~ Camera.h
+ ~ Engine.h
+ ~ Game.h
+ ~ GameEntity.h
+ ~ Mesh.h
+ ~ Object.h
+ ~ Renderer.h
+ ~ Timer.h
+ ~ Vertex.h
+-Moved vertices to a Mesh class that is held by the Game Entity class
+-Added a Vertex class that holds a struct of how the data of my vertices will be arranged
+-Added in-game timer, delta time, and etc
+-Added necessary methods for transformations, scale, and rotation inside Game Enity class
+(NOTE: Can't implement them though because I don't know how to use openGL's math library ;-;
+Also I need to get my vertex and pixel shader up and running before I can even use them anyways)

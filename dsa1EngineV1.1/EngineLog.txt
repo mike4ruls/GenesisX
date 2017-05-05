@@ -1,6 +1,0 @@
-===Version 1.0===
--The start of an Open GL engine
--Created Window
-
-===Version 1.1===
--Draws vertices to the screen
