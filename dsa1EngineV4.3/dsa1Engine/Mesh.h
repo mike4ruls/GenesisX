@@ -1,5 +1,6 @@
 #pragma once
 #include "Vertex.h"
+#include "VertInd.h"
 #include <GL\glew.h>
 #include <string>
 #include <sstream>

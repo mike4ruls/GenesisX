@@ -21,39 +21,72 @@ Mesh::Mesh(std::string filename)
 	vector<glm::vec3> pos;
 	vector<glm::vec2> uv;
 	vector<glm::vec3> nor;
-	vector<unsigned int> in;
+	vector<VertInd> in;
 
 	inFile.open(filename);
 	if(inFile.is_open())
 	{
 		while(getline(inFile, info))
 		{
-			char type;
 			istringstream ss(info);
-
+			string type;
 			ss >> type;
-			if(type == 'v')
-			{
-			
-			}
-			else if (type == 'vt')
-			{
 
-			}
-			else if (type == 'vn')
+			if(type == "v")
 			{
-
+				glm::vec3 ps;
+				ss >> ps.x;
+				ss >> ps.y;
+				ss >> ps.z;
+				pos.push_back(ps);
 			}
-			else if (type == 'f')
+			else if (type == "vt")
 			{
-
+				glm::vec2 ps;
+				ss >> ps.x;
+				ss >> ps.y;
+				uv.push_back(ps);
+			}
+			else if (type == "vn")
+			{
+				glm::vec3 ps;
+				ss >> ps.x;
+				ss >> ps.y;
+				ss >> ps.z;
+				nor.push_back(ps);
+			}
+			else if (type == "f")
+			{
+				for(int i = 0; i < 3; i++)
+				{
+					VertInd indices;
+					char slash;
+					ss >> indices.posInd;
+					ss >> slash;
+					ss >> indices.uvInd;
+					ss >> slash;
+					ss >> indices.normInd;
+					in.push_back(indices);
+				}			
 			}
 		}
 		inFile.close();
 	}
-	
-
-
+	for(unsigned int i = 0; i < pos.size(); i++)
+	{
+		Vertex newVert;
+		newVert.pos = pos[i];
+		newVert.uv = uv[i];
+		newVert.normal = nor[i];
+		newVert.color = {0.5f,0.5f,0.5f,1.0f};
+		verts.push_back(newVert);
+	}
+	for (unsigned int j = 0; j < in.size(); j++)
+	{
+		ind.push_back(in[j].posInd - 1);
+	}
+	count = ind.size();
+	CreateBuffer();
 }
 
 Mesh::~Mesh()

@@ -171,6 +171,7 @@
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VertInd.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fShader.glsl" />

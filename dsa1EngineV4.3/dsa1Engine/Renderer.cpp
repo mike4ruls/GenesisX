@@ -4,6 +4,7 @@
 
 Renderer::Renderer()
 {
+	FIBITMAP* image = FreeImage_Load(FIF_TARGA,"");
 	glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
 }	
 

@@ -12,6 +12,7 @@ class GameEntity
 public:
 	GameEntity(void *r);
 	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r);
+	GameEntity(std::string nm, std::string filename, void *r);
 	GameEntity(std::string nm, Mesh &oM, void *r);
 	~GameEntity() override;
 

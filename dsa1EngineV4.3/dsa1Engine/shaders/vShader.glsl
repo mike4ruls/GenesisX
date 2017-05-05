@@ -14,6 +14,7 @@ layout (location = 6) uniform mat4 proj;
 layout (location = 7) uniform float t;
 
 out vec3 fragPos;
+out vec2 uv;
 out vec4 color;
 out float time;
 
@@ -21,6 +22,7 @@ void main()
 {
 	mat4 worldViewProj = proj * view * worldPos;
 	fragPos = input.position;
+	uv = input.uv;
 	color = input.color;
 	time = t;
 	gl_Position = worldViewProj*vec4(input.position, 1);	

@@ -53,6 +53,10 @@ void Game::CreateMeshes()
 	gameobj.push_back(new GameEntity("pizza", verts, ind, rend));
 	gameobj.push_back(new GameEntity("pizza2", verts2, ind2, rend));
 	gameobj.push_back(new GameEntity("more pizza", verts3, ind3, rend));
+	gameobj.push_back(new GameEntity("too much pizza", "models/teapot.obj", rend));
+	gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
+	gameobj[3]->Translate(0,1,0);
+	gameobj[4]->Scale(0.1f);
 
 }
 
@@ -64,6 +68,6 @@ void Game::Update(GLuint program)
 	}
 	(gameobj)[0]->Translate(glm::sin(Engine::time.t) * Engine::time.dt,0.0f,0.0f);
 	gameobj[2]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
-	//gameobj[2]->Scale(glm::sin(Engine::time.t *Engine::time.dt)/5);
+	gameobj[3]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
 	rend->Update(program);
 }

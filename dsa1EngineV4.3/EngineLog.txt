@@ -1,11 +1,11 @@
-===Version 1.0===
+===Version 1.0===3/1/17
 -The start of an Open GL engine
 -Created Window
 
-===Version 1.1===
+===Version 1.1===3/1/17
 -Draws vertices to the screen
 
-===Version 2.0===
+===Version 2.0===3/1/17
 -Added new clases:
  ~ Camera.h
  ~ Engine.h
@@ -23,23 +23,27 @@
 (NOTE: Can't implement them though because I don't know how to use openGL's math library ;-;
 Also I need to get my vertex and pixel shader up and running before I can even use them anyways)
 
-===Version 2.5===
+===Version 2.5===3/5/17
 -Added dynamic rendering for my game objects
 (Basically they automatically add them selves to the render to be rendered on their own)
 
-===Version 3.0===
+===Version 3.0===3/13/17
 -Moved Basic window creation and game loop to the engine class
 -Added Shader Manager Class
 -Finally got Verter Shader and Pixel Shader implemented and working
 
-===Version 3.3===
+===Version 3.3===3/15/17
 -Modified the vertex shader to accept a struct of vertex information coming in
 -Added more information to my vertex (uv's, normals, color)
 -Added mouse and keyboard input
 
-===Version 4.0===
+===Version 4.0=== 3/22/17
 -Added movable camera that moves and rotates
 -Added input to move up, down, left, right, foward, backward
 -Added sprinting with LEFT SHIFT
 -Added 3-D cube mesh to view in the engine
 -Added cycling colors that change over time
+
+===Version 4.3=== 3/24/17
+-Added model loading
+-Added my own hand made model of the ray gun
