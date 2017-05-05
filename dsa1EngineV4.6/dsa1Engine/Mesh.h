@@ -2,6 +2,7 @@
 #include "Vertex.h"
 #include "VertInd.h"
 #include <GL\glew.h>
+#include <FreeImage.h>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -15,7 +16,12 @@ public:
 	Mesh(std::string filename);
 	~Mesh();
 
+	void LoadTexture(char* filename);
+	GLuint GetTexId();
 	void CreateBuffer();
+
+	bool hasTex = false;
+	unsigned int texID = 0;
 
 	GLuint vertArr;
 	GLuint vertBuf;

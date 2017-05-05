@@ -93,18 +93,18 @@ void GameEntity::Translate(float x, float y, float z)
 
 void GameEntity::Scale(float x, float y, float z)
 {
-	scale.x += x;
-	scale.y += y;
-	scale.z += z;
+	scale.x = x;
+	scale.y = y;
+	scale.z = z;
 
 	SetWorldPos();
 }
 
 void GameEntity::Scale(float c)
 {
-	scale.x += c;
-	scale.y += c;
-	scale.z += c;
+	scale.x = c;
+	scale.y = c;
+	scale.z = c;
 
 	SetWorldPos();
 }

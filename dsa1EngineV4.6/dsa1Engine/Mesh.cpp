@@ -57,17 +57,17 @@ Mesh::Mesh(std::string filename)
 			}
 			else if (type == "f")
 			{
-				for(int i = 0; i < 3; i++)
+				for (int i = 0; i < 3; i++)
 				{
-					VertInd indices;
 					char slash;
+					VertInd indices;
 					ss >> indices.posInd;
 					ss >> slash;
 					ss >> indices.uvInd;
 					ss >> slash;
 					ss >> indices.normInd;
 					in.push_back(indices);
-				}			
+				}
 			}
 		}
 		inFile.close();
@@ -91,6 +91,39 @@ Mesh::Mesh(std::string filename)
 
 Mesh::~Mesh()
 {
+}
+
+void Mesh::LoadTexture(char * filename)
+{
+	//FREE_IMAGE_FORMAT type = FreeImage_GetFileType("models/textures/raygunUVTest.tga",0);
+	//FIBITMAP* image = FreeImage_Load(type, "models/textures/raygunUVTest.tga");
+	FREE_IMAGE_FORMAT type = FreeImage_GetFileType(filename, 0);
+	FIBITMAP* image = FreeImage_Load(type, filename);
+	if (image == nullptr) return;
+
+	FIBITMAP* image32Bit = FreeImage_ConvertTo32Bits(image);
+	FreeImage_Unload(image);
+
+	texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	int texWidth = FreeImage_GetWidth(image32Bit);
+	int texHeight = FreeImage_GetHeight(image32Bit);
+	BYTE* texAddress = FreeImage_GetBits(image32Bit);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)texAddress);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	FreeImage_Unload(image32Bit);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	hasTex = true;
+}
+
+GLuint Mesh::GetTexId()
+{
+	return texID;
 }
 
 void Mesh::CreateBuffer()

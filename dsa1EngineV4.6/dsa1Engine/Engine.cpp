@@ -35,7 +35,9 @@ bool Engine::Init()
 
 	glfwSetMouseButtonCallback(GLFWwindowPtr, MouseClick);
 	glfwSetKeyCallback(GLFWwindowPtr, KeyCallback);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	mainCam = new Camera(*GLFWwindowPtr);
 	currentMouseClick = false;
 	return true;

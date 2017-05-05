@@ -46,4 +46,11 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 
 ===Version 4.3=== 3/24/17
 -Added model loading
+-Added teapot model obj to engine
 -Added my own hand made model of the ray gun
+
+===Version 4.6=== 3/26/17
+-Finally got textures to work on game objects
+-Moved texturing loading to mesh class
+-Shaders can sort between objects that have textures and no textures
+-Fixed Scaling bug not working right

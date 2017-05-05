@@ -13,6 +13,7 @@ layout (location = 5) uniform mat4 view;
 layout (location = 6) uniform mat4 proj;
 layout (location = 7) uniform float t;
 
+
 out vec3 fragPos;
 out vec2 uv;
 out vec4 color;

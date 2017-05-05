@@ -2,7 +2,6 @@
 #include <vector>
 #include "ShaderManager.h"
 #include <GL\glew.h>
-#include <FreeImage.h>
 #include "GameEntity.h"
 
 
@@ -11,8 +10,6 @@ class Renderer
 public:
 	Renderer();
 	~Renderer();
-
-
 
 	void Update(GLuint program);
 	unsigned int AddToRenderer(GameEntity &obj);
