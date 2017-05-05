@@ -26,3 +26,8 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 ===Version 2.5===
 -Added dynamic rendering for my game objects
 (Basically they automatically add them selves to the render to be rendered on their own)
+
+===Version 3.0===
+-Moved Basic window creation and game loop to the engine class
+-Added Shader Manager Class
+-Finally got Verter Shader and Pixel Shader implemented and working
