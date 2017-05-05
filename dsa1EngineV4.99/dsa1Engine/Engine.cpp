@@ -61,6 +61,8 @@ bool Engine::gameLoop()
 		bool down = false;
 		bool sprint = false;
 		bool resetCam = false;
+		bool forceOn = false;
+		bool gravOn = false;
 		
 		if (keyIsDown[GLFW_KEY_LEFT] || keyIsDown[GLFW_KEY_A])
 		{
@@ -109,6 +111,14 @@ bool Engine::gameLoop()
 			glfwGetWindowSize(GLFWwindowPtr, &width, &height);
 			glfwSetCursorPos(GLFWwindowPtr, width * 0.5f, height * 0.5f);
 		}
+		if (keyIsDown[GLFW_KEY_N])
+		{
+			forceOn = true;
+		}
+		if (keyIsDown[GLFW_KEY_G])
+		{
+			gravOn = true;
+		}
 
 		mainCam->SetProjection();
 		mainCam->SetView();
@@ -118,7 +128,7 @@ bool Engine::gameLoop()
 		glUniformMatrix4fv(6, 1, GL_FALSE, &mainCam->ProjectMatrix[0][0]);
 
 		Engine::Update();
-		myGame->Update(shaderM.GetProgram());
+		myGame->Update(shaderM.GetProgram(), forceOn, gravOn);
 
 		// swap chain
 		glfwSwapBuffers(GLFWwindowPtr);

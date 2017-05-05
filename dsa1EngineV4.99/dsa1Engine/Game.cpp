@@ -3,6 +3,7 @@
 Game::Game(Renderer *r)
 {
 	rend = r;
+	prevSwitch = false;
 	light1 = Light("Light1", glm::vec3(-1, 1, 2), glm::vec3(0, 0, 0), rend);
 	CreateMeshes();
 }
@@ -57,10 +58,15 @@ void Game::CreateMeshes()
 	gameobj.push_back(new GameEntity("too much pizza", "models/teapot.obj", rend));
 	gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
 
+	// setting box settings
 	gameobj[2]->Scale(0.1f);
 	gameobj[2]->Translate(0, 0, 0.5f);
 	gameobj[2]->objMesh.LoadTexture("models/textures/brick.jpg");
+	gameobj[2]->ridgidBody.mass = 1.2f;
+	// setting teapot settings
 	gameobj[3]->Translate(0,1,0);
+	gameobj[3]->ridgidBody.mass = 0.9f;
+	// setting raygun settings
 	gameobj[4]->objMesh.LoadTexture("models/textures/raygunUVTest.tga");
 	gameobj[4]->Translate(0, 0, 1);
 	gameobj[4]->Rotate(0, 45, 0);
@@ -68,18 +74,35 @@ void Game::CreateMeshes()
 
 }
 
-void Game::Update(GLuint program)
+void Game::Update(GLuint program, bool forceOn, bool switchGrav)
 {
+	if (forceOn)
+	{
+		gameobj[4]->ApplyForce(glm::vec3(0.5f, 0.0f, 0.0f));
+	}
 	for(unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		(gameobj)[i]->Update();
+		if(switchGrav != prevSwitch && prevSwitch == false)
+		{
+			if((gameobj)[i]->applyGrav)
+			{
+				(gameobj)[i]->applyGrav = false;
+			}
+			else
+			{
+				(gameobj)[i]->applyGrav = true;
+			}
+		}
 	}
 	(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
 	//gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
 	gameobj[2]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
 	gameobj[3]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
+	
 
 	glUniform3f(9, light1.lightPos.x, light1.lightPos.y, light1.lightPos.z);
 
 	rend->Update(program);
+	prevSwitch = switchGrav;
 }

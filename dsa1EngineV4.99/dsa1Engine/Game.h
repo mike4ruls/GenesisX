@@ -8,7 +8,8 @@ public:
 	~Game();
 
 	void CreateMeshes();
-	void Update(GLuint program);
+	void Update(GLuint program, bool forceOn, bool switchGrav);
+	bool prevSwitch;
 
 	Renderer* rend;
 	Light light1;

@@ -42,10 +42,31 @@ public:
 	void Rotate(glm::vec3 RotVec);
 	void Rotate(float x, float y, float z);
 
+	void ApplyForce(glm::vec3 force);
+	void ApplyGravity();
+	void CalculateFric();
+	void UpdateVelocity();
+
+	bool applyGrav;
+	float maxSpeed;
+	float fricStrength;
+	glm::vec3 gravity;
+
+	struct Transform
+	{
+		glm::vec3 position;
+		glm::vec3 scale;
+		glm::vec3 rotation;
+	}transform;
+	struct RidgidBody
+	{
+		glm::vec3 velocity;
+		glm::vec3 acceleration;
+		glm::vec3 friction;
+		float mass;
+	}ridgidBody;
+
 private:
-	glm::vec3 position;
-	glm::vec3 scale;
-	glm::vec3 rotation;
 
 	void* rend;
 };

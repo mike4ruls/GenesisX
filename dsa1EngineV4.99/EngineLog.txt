@@ -69,3 +69,15 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 =Bugs=
 -Lighting isn't fully working, it doing something but not what I want. It almost looks correct
 but i'm pretty sure its how i'm calculating the normals
+
+===Version 4.99=== 3/26/17
+-Restructed Game Objects to have Transform structs
+-Added Ridgid Body structs to Game Objects that hold:
+	~Velocity, Acceleration, Friction, and Mass
+-Added methods to apply forces to the Game Object and move it accordingly taking in account friction
+-Added a method that applys a gravity force on Game Objects
+-Added button controls to switch on and off gravity force and applying a force to the ray gun object
+	~(G) turns on and off gravity
+	~(N) applies a force to the ray gun object in the positive x direction
+=Bugs=
+-Lighting still don't work right ;-;
