@@ -15,11 +15,19 @@ public:
 	bool bufferModel();
 	bool gameLoop();
 	bool useShader();
+	GLuint CreateGeometryBuffer();
+	void LightinPass();
 
 
-
+	int width;
+	int height;
 	GLFWwindow* GLFWwindowPtr;
 	Camera* mainCam;
+	GLuint g_Buffer;
+	GLuint colText;
+	GLuint normText;
+	GLuint worldText;
+	GLuint depthBuffer;
 	InputManager input;
 
 	static void Start();

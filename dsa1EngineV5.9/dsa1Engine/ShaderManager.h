@@ -11,9 +11,12 @@ public:
 
 	GLuint regProgram;
 	GLuint skyProgram;
+	GLuint geoProgram;
+	GLuint lightProgram;
 	GLuint GetProgram() const;
 
 	bool LoadShaders(const char* vFile, const char * fFile, GLuint &program);
+	bool LoadLightShader(const char * fFile, GLuint &program);
 
 	GLuint LoadShader(const char* file, GLenum shaderType);
 

@@ -184,32 +184,32 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 		GL_STATIC_DRAW);
 
 	// letting the computer know how the buffer is structured
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(0, // the index
+	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(5);
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(3, // the index
 		3, // number of components to expect(x,y,z)
 		GL_FLOAT, // Type of data
 		GL_FALSE, // should we normalize the data
 		sizeof(Vertex), // stride
 		0); // the offset 
 
-	glVertexAttribPointer(1,
+	glVertexAttribPointer(4,
 		2, // number of components to expect(u,v)
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(Vertex),
 		reinterpret_cast<void *>(offsetof(Vertex, uv)));
 
-	glVertexAttribPointer(2,
+	glVertexAttribPointer(5,
 		3,// number of components to expect(x,y,z)
 		GL_FLOAT,
 		GL_FALSE,
 		sizeof(Vertex),
 		reinterpret_cast<void *>(offsetof(Vertex, normal)));
 
-	glVertexAttribPointer(3,
+	glVertexAttribPointer(6,
 		4,// number of components to expect(r,g,b,a)
 		GL_FLOAT,
 		GL_FALSE,
@@ -244,32 +244,32 @@ void Mesh::CreateBuffer()
 
 
 	// letting the computer know how the buffer is structured
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(0, // the index
+	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(5);
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(3, // the index
 		3, // number of components to expect(x,y,z)
 		GL_FLOAT, // Type of data
 		GL_FALSE, // should we normalize the data
 		sizeof(Vertex), // stride
 		0); // the offset 
 	
-		glVertexAttribPointer(1,
+		glVertexAttribPointer(4,
 			2, // number of components to expect(u,v)
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
 			reinterpret_cast<void *>(offsetof(Vertex, uv)));
 
-		glVertexAttribPointer(2,
+		glVertexAttribPointer(5,
 			3,// number of components to expect(x,y,z)
 			GL_FLOAT, 
 			GL_FALSE, 
 			sizeof(Vertex), 
 			reinterpret_cast<void *>(offsetof(Vertex, normal)));
 
-		glVertexAttribPointer(3,
+		glVertexAttribPointer(6,
 			4,// number of components to expect(r,g,b,a)
 			GL_FLOAT,
 			GL_FALSE,

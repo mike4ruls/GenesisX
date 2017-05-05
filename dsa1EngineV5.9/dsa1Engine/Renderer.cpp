@@ -25,18 +25,17 @@ Renderer::~Renderer()
 void Renderer::Update(GLuint program)
 {
 	// clearing the screen
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//gameObjs[5]->camParent = cam;
 	for(unsigned int i = 0; i < gameObjs.size(); i++)
 	{
 		// rendering game object
 		float time = Engine::time.t;
 
-		glUniformMatrix4fv(4, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
-		glUniform1f(7, time);
-		glUniform3f(8, cam->camPos.x, cam->camPos.y, cam->camPos.z);
-		glUniform1i(10, gameObjs[i]->objMesh.hasTex);
-		glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
+		glUniformMatrix4fv(7, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
+		glUniform1f(10, time);
+		//glUniform3f(8, cam->camPos.x, cam->camPos.y, cam->camPos.z);
+		glUniform1i(11, gameObjs[i]->objMesh.hasTex);
+		//glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
 		if (gameObjs[i]->objMesh.hasTex)
 		{
 			glBindTexture(GL_TEXTURE_2D, gameObjs[i]->objMesh.GetTexId());
@@ -54,7 +53,7 @@ void Renderer::Update(GLuint program)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
-	DrawSkyBox();
+	//DrawSkyBox();
 }
 
 unsigned int Renderer::AddToRenderer(GameEntity &obj)
@@ -172,8 +171,8 @@ void Renderer::LoadAllSkyBoxes()
 
 void Renderer::DrawSkyBox()
 {
-	glDepthMask(GL_FALSE);
 	glUseProgram(shaderM->skyProgram);
+	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 	glm::mat4 view = glm::mat4(glm::mat3(cam->viewMatrix));
 	glUniformMatrix4fv(1, 1, GL_FALSE, &view[0][0]);
@@ -182,11 +181,15 @@ void Renderer::DrawSkyBox()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, Skybox);
 	glDepthFunc(GL_LEQUAL);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, SkyBoxModel.GetCount());
 	glBindVertexArray(0);
 	glDepthMask(GL_TRUE);
-	glUseProgram(shaderM->regProgram);
+	glUseProgram(shaderM->GetProgram());
 	glEnable(GL_CULL_FACE);
 	glDepthFunc(GL_LESS);
+}
+
+void Renderer::LightingPass()
+{
 }
 

@@ -19,6 +19,7 @@ public:
 	GLuint loadCubeMap(std::vector<const GLchar*> faces);
 	void LoadAllSkyBoxes();
 	void DrawSkyBox();
+	void LightingPass();
 
 	int currentSky;
 	ShaderManager* shaderM;

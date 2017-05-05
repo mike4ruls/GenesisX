@@ -118,5 +118,17 @@
     <None Include="shaders\instanceVShader.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\geometryShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightingShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\lightingVShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\geometryVShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ public:
 	void CreateMeshes();
 	//bool CanRenderLights(GameEntity obj, Light light);
 	void Update(GLuint program);
+	void LightingPass();
 
 	InputManager *input;
 	Renderer* rend;

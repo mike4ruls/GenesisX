@@ -111,3 +111,15 @@ out pretty well
 -Fixed Lighting calculations
 -Changed light values
 -Getting ready to implement Deffered Rendering
+
+===Version 5.9=== 4/24/17
+-First implementation of deferred rendering
+-Added new shaders to handle deffered rendering
+-Added new render target called g_Buffer that holds:
+	~The color texture
+	~The normal texture
+	~The frag position texture
+-Fixed sky box rendering with deferred rendering, still gets rendered at the end
+=Bugs=
+-Having a hard time go about lighting certain pixels if they are being hit by a light
+-As of now it only outputs regular textures with no lighting

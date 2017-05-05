@@ -55,36 +55,36 @@ void Game::CreateMeshes()
 //	std::vector<unsigned int> ind3 = { 0,1,2,0,2,3, 4,5,1,4,1,0, 7,6,5,7,5,4, 3,2,6,3,6,7, 1,5,6,1,6,2, 4,0,3,4,3,7 };
 	
 	// making a game obj
-	gameobj.push_back(new GameEntity("pizza", verts, ind, rend));
-	gameobj.push_back(new GameEntity("pizza2", verts2, ind2, rend));
+	//gameobj.push_back(new GameEntity("pizza", verts, ind, rend));
+	//gameobj.push_back(new GameEntity("pizza2", verts2, ind2, rend));
 	gameobj.push_back(new GameEntity("more pizza","models/box.obj", rend));
 	gameobj.push_back(new GameEntity("too much pizza", "models/teapot.obj", rend));
-	gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
-	gameobj.push_back(new GameEntity("lots pizza", "models/HaloSword.obj", rend));
+	//gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
+	//gameobj.push_back(new GameEntity("lots pizza", "models/HaloSword.obj", rend));
 
 	// setting box settings
-	gameobj[2]->Scale(0.1f);
-	gameobj[2]->Translate(0, 0, 0.5f);
-	gameobj[2]->objMesh.LoadTexture("models/textures/brick.jpg");
-	gameobj[2]->ridgidBody.mass = 1.2f;
+	gameobj[0]->Scale(0.1f);
+	gameobj[0]->Translate(0, 0, 0.5f);
+	gameobj[0]->objMesh.LoadTexture("models/textures/brick.jpg");
+	gameobj[0]->ridgidBody.mass = 1.2f;
 
-	// setting teapot settings
-	gameobj[3]->Translate(0,1,0);
-	gameobj[3]->ridgidBody.mass = 0.9f;
-	gameobj[3]->objMesh.specular = {10,10,10,10};
+	//// setting teapot settings
+	gameobj[1]->Translate(0,1,0);
+	gameobj[1]->ridgidBody.mass = 0.9f;
+	gameobj[1]->objMesh.specular = {10,10,10,10};
 
-	// setting raygun settings
-	gameobj[4]->objMesh.LoadTexture("models/textures/raygunUVTest.tga");
-	//gameobj[4]->objMesh.LoadTexture("models/textures/brick.jpg");
-	gameobj[4]->objMesh.specular = { 4,4,4,4 };
-	gameobj[4]->Translate(0, 0, 1);
-	gameobj[4]->Rotate(0, 45, 0);
-	//gameobj[4]->Scale(0.1f);
-	gameobj[4]->parent = gameobj[3];
+	//// setting raygun settings
+	//gameobj[4]->objMesh.LoadTexture("models/textures/raygunUVTest.tga");
+	////gameobj[4]->objMesh.LoadTexture("models/textures/brick.jpg");
+	//gameobj[4]->objMesh.specular = { 4,4,4,4 };
+	//gameobj[4]->Translate(0, 0, 1);
+	//gameobj[4]->Rotate(0, 45, 0);
+	////gameobj[4]->Scale(0.1f);
+	//gameobj[4]->parent = gameobj[3];
 
-	gameobj[5]->objMesh.specular = { 11,11,11,11 };
-	gameobj[5]->Rotate(0, 1.5, 0);
-	gameobj[5]->Scale(0.1f);
+	//gameobj[5]->objMesh.specular = { 11,11,11,11 };
+	//gameobj[5]->Rotate(0, 1.5, 0);
+	//gameobj[5]->Scale(0.1f);
 	
 }
 
@@ -105,27 +105,27 @@ void Game::Update(GLuint program)
 	float speed = 0.25f;
 	if (input->IsKeyDown(GLFW_KEY_LEFT))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(-speed, 0.0f, 0.0f));
+		//gameobj[4]->ApplyForce(glm::vec3(-speed, 0.0f, 0.0f));
 	}
 	if (input->IsKeyDown(GLFW_KEY_RIGHT))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(speed, 0.0f, 0.0f));
+		//gameobj[4]->ApplyForce(glm::vec3(speed, 0.0f, 0.0f));
 	}
 	if (input->IsKeyDown(GLFW_KEY_UP))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, -speed));
+		//gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, -speed));
 	}
 	if (input->IsKeyDown(GLFW_KEY_DOWN))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, speed));
+		//gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, speed));
 	}
 	if (input->IsKeyDown(GLFW_KEY_LEFT_BRACKET))
 	{
-		gameobj[5]->Rotate(0.0f,-0.1f,0.0f);
+		//gameobj[5]->Rotate(0.0f,-0.1f,0.0f);
 	}
 	if (input->IsKeyDown(GLFW_KEY_RIGHT_BRACKET))
 	{
-		gameobj[5]->Rotate(0.0f, 0.1f, 0.0f);
+		//gameobj[5]->Rotate(0.0f, 0.1f, 0.0f);
 	}
 	if (input->IsKeyDown(GLFW_KEY_O))
 	{
@@ -174,17 +174,22 @@ void Game::Update(GLuint program)
 	for(unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		(gameobj)[i]->Update();
-		glUniform1f(14, light1.myLight.lightRadius);
+		
 	}
-	(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
-	//gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
-	gameobj[2]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
-	gameobj[3]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
+	//(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
+	gameobj[0]->Scale(abs(sin(Engine::time.t))/5.0f);
+	gameobj[0]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
+	gameobj[1]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
+	
 	
 
-	glUniform3f(9, light1.myLight.lightPos.x, light1.myLight.lightPos.y, light1.myLight.lightPos.z);
-	glUniform1f(11, light1.myLight.lightIntensity);
-	glUniform4f(12, light1.myLight.color.x, light1.myLight.color.y, light1.myLight.color.z, light1.myLight.color.w);
-
 	rend->Update(program);
+}
+
+void Game::LightingPass()
+{
+	glUniform3f(3, light1.myLight.lightPos.x, light1.myLight.lightPos.y, light1.myLight.lightPos.z);
+	glUniform1f(4, light1.myLight.lightIntensity);
+	glUniform4f(5, light1.myLight.color.x, light1.myLight.color.y, light1.myLight.color.z, light1.myLight.color.w);
+	glUniform1f(6, light1.myLight.lightRadius);
 }

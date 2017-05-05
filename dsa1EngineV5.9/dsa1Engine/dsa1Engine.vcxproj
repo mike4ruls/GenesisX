@@ -187,7 +187,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\fShader.glsl" />
+    <None Include="shaders\geometryShader.glsl" />
+    <None Include="shaders\geometryVShader.glsl" />
     <None Include="shaders\instanceVShader.glsl" />
+    <None Include="shaders\lightingShader.glsl" />
+    <None Include="shaders\lightingVShader.glsl" />
     <None Include="shaders\skyBoxPShader.glsl" />
     <None Include="shaders\skyBoxVShader.glsl" />
     <None Include="shaders\vShader.glsl" />

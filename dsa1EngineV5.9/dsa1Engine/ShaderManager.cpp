@@ -6,6 +6,8 @@ ShaderManager::ShaderManager()
 {
 	regProgram = 0;
 	skyProgram = 0;
+	geoProgram = 0;
+	lightProgram = 0;
 }
 
 
@@ -16,7 +18,7 @@ ShaderManager::~ShaderManager()
 
 GLuint ShaderManager::GetProgram() const
 {
-	return regProgram;
+	return geoProgram;
 }
 
 bool ShaderManager::LoadShaders(const char * vFile, const char * fFile, GLuint &program)
@@ -32,6 +34,30 @@ bool ShaderManager::LoadShaders(const char * vFile, const char * fFile, GLuint &
 	GLint result;
 	glGetProgramiv(program, GL_LINK_STATUS, &result);
 	if(result == 0)
+	{
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &result);
+		GLchar* debug = new GLchar[result];
+
+		glGetProgramInfoLog(program, result, 0, debug);
+		printf(debug);
+		glDeleteProgram(program);
+		delete[] debug; debug = nullptr;
+		return false;
+	}
+	return true;
+}
+
+bool ShaderManager::LoadLightShader(const char * fFile, GLuint & program)
+{
+	GLuint fragShader = LoadShader(fFile, GL_FRAGMENT_SHADER);
+
+	program = glCreateProgram();
+	glAttachShader(program, fragShader);
+	glLinkProgram(program);
+
+	GLint result;
+	glGetProgramiv(program, GL_LINK_STATUS, &result);
+	if (result == 0)
 	{
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &result);
 		GLchar* debug = new GLchar[result];
