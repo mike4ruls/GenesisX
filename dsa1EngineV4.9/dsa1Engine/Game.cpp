@@ -3,6 +3,7 @@
 Game::Game(Renderer *r)
 {
 	rend = r;
+	light1 = Light("Light1", glm::vec3(-1, 1, 2), glm::vec3(0, 0, 0), rend);
 	CreateMeshes();
 }
 
@@ -48,7 +49,7 @@ void Game::CreateMeshes()
 //	{ glm::vec3(0.2f,-0.2f,-0.2f), uv, normal, purple }
 //};// Bottom Right
 //	std::vector<unsigned int> ind3 = { 0,1,2,0,2,3, 4,5,1,4,1,0, 7,6,5,7,5,4, 3,2,6,3,6,7, 1,5,6,1,6,2, 4,0,3,4,3,7 };
-
+	
 	// making a game obj
 	gameobj.push_back(new GameEntity("pizza", verts, ind, rend));
 	gameobj.push_back(new GameEntity("pizza2", verts2, ind2, rend));
@@ -74,8 +75,11 @@ void Game::Update(GLuint program)
 		(gameobj)[i]->Update();
 	}
 	(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
-	gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
+	//gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
 	gameobj[2]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
 	gameobj[3]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
+
+	glUniform3f(9, light1.lightPos.x, light1.lightPos.y, light1.lightPos.z);
+
 	rend->Update(program);
 }

@@ -54,3 +54,18 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 -Moved texturing loading to mesh class
 -Shaders can sort between objects that have textures and no textures
 -Fixed Scaling bug not working right
+
+===Version 4.9=== 3/26/17
+-Added lights to game engine
+-Added a light class
+	~light class automatically creates a gameobject sphere at the light source position
+	to visually see where the light source is at
+	~light tags the game object as "light"
+	~In renderer, i can sort through tags to find light sources and turn on line only rendering
+	then turn it off when it is not needed anymore
+-Revamped my vertex and pixel/fragment shader to output and input structs of information between the shaders
+-Added Ambience
+-Added Specular
+=Bugs=
+-Lighting isn't fully working, it doing something but not what I want. It almost looks correct
+but i'm pretty sure its how i'm calculating the normals

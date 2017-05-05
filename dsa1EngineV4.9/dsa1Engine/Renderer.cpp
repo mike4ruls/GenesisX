@@ -2,8 +2,10 @@
 
 
 
-Renderer::Renderer()
+Renderer::Renderer(Camera *c)
 {
+	cam = c;
+	lightPos = glm::vec3(-10,10,2);
 	glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
 }	
 
@@ -25,16 +27,25 @@ void Renderer::Update(GLuint program)
 		//glUseProgram(program);
 		glUniformMatrix4fv(4, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
 		glUniform1f(7, time);
-		glUniform1i(8, gameObjs[i]->objMesh.hasTex);
+		glUniform3f(8, cam->camPos.x, cam->camPos.y, cam->camPos.z);
+
+		glUniform1i(10, gameObjs[i]->objMesh.hasTex);
 		if (gameObjs[i]->objMesh.hasTex)
 		{
 			glBindTexture(GL_TEXTURE_2D, gameObjs[i]->objMesh.GetTexId());
 		}
-
+		if (gameObjs[i]->GetTag() == "Light")
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
 		glBindVertexArray((gameObjs)[i]->GetVertArr());
 		glDrawArrays(GL_TRIANGLES, 0, (gameObjs)[i]->GetCount());
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		if (gameObjs[i]->GetTag() == "Light")
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 	}
 }
 

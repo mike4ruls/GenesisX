@@ -3,6 +3,10 @@
 
 
 
+GameEntity::GameEntity()
+{
+}
+
 GameEntity::GameEntity(void *r)
 	:Object()
 {
@@ -82,11 +86,39 @@ unsigned int GameEntity::GetCount()
 	return objMesh.count;
 }
 
+void GameEntity::SetTag(std::string tagName)
+{
+	tag = tagName;
+}
+
+std::string GameEntity::GetTag()
+{
+	return tag;
+}
+
+void GameEntity::Translate(glm::vec3 transVec)
+{
+	position.x += transVec.x;
+	position.y += transVec.y;
+	position.z += transVec.z;
+
+	SetWorldPos();
+}
+
 void GameEntity::Translate(float x, float y, float z)
 {
 	position.x += x;
 	position.y += y;
 	position.z += z;
+
+	SetWorldPos();
+}
+
+void GameEntity::Scale(glm::vec3 scaleVec)
+{
+	scale.x = scaleVec.x;
+	scale.y = scaleVec.y;
+	scale.z = scaleVec.z;
 
 	SetWorldPos();
 }
@@ -105,6 +137,15 @@ void GameEntity::Scale(float c)
 	scale.x = c;
 	scale.y = c;
 	scale.z = c;
+
+	SetWorldPos();
+}
+
+void GameEntity::Rotate(glm::vec3 RotVec)
+{
+	rotation.x += RotVec.x;
+	rotation.y += RotVec.y;
+	rotation.z += RotVec.z;
 
 	SetWorldPos();
 }

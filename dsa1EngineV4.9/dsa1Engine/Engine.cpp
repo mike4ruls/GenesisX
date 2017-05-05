@@ -48,7 +48,7 @@ bool Engine::bufferModel()
 }
 bool Engine::gameLoop()
 {
-	Renderer* newRend = new Renderer();
+	Renderer* newRend = new Renderer(mainCam);
 	Game* myGame = new Game(newRend);
 
 	while (!glfwWindowShouldClose(GLFWwindowPtr))
