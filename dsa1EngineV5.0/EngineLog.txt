@@ -81,3 +81,17 @@ but i'm pretty sure its how i'm calculating the normals
 	~(N) applies a force to the ray gun object in the positive x direction
 =Bugs=
 -Lighting still don't work right ;-;
+
+===Version 5.0=== 3/29/17
+-FINALLY GOT LIGHTS WORKING
+	~Apperently my normals weren't getting loaded in right
+	~Had to re-write my code to take in indices for positions, uv's, and normals
+-Fixed fragment shader to display lighting correctly
+-Lights and game objects now have a radius based on the farthest vertice from it's origin
+-Using the lights radius I can now calculate if a vertice is in range of the light source so it can be rendered
+-The distance an object is away from the light source effects the light intensity on the object, it fades in and 
+out pretty well
+-Meshes now hold specular data
+-Light sources now hold ambience data
+-Added InputManager Class, moved all input code to approprate spots
+-Left, Right, Up, and Down keys move the ray gun model left, right, foward, and backwards using forces

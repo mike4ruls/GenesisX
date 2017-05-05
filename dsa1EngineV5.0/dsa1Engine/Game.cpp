@@ -1,10 +1,13 @@
 #include "Game.h"
 
-Game::Game(Renderer *r)
+Game::Game(Renderer &r, InputManager &ip)
 {
-	rend = r;
-	prevSwitch = false;
-	light1 = Light("Light1", glm::vec3(-1, 1, 2), glm::vec3(0, 0, 0), rend);
+	rend = &r;
+	input = &ip;
+	light1 = Light("Light1", 0.4f, glm::vec3(-2, 1, 2), glm::vec3(0, 0, 0), rend);
+	 
+	// adds blue ambient to light
+	light1.ambient = {0.0f,0.0f,5.0f,1.0f};
 	CreateMeshes();
 }
 
@@ -63,29 +66,65 @@ void Game::CreateMeshes()
 	gameobj[2]->Translate(0, 0, 0.5f);
 	gameobj[2]->objMesh.LoadTexture("models/textures/brick.jpg");
 	gameobj[2]->ridgidBody.mass = 1.2f;
+
 	// setting teapot settings
 	gameobj[3]->Translate(0,1,0);
 	gameobj[3]->ridgidBody.mass = 0.9f;
+	gameobj[3]->objMesh.specular = {10,10,10,10};
+
 	// setting raygun settings
 	gameobj[4]->objMesh.LoadTexture("models/textures/raygunUVTest.tga");
+	//gameobj[4]->objMesh.LoadTexture("models/textures/brick.jpg");
+	gameobj[4]->objMesh.specular = { 4,4,4,4 };
 	gameobj[4]->Translate(0, 0, 1);
 	gameobj[4]->Rotate(0, 45, 0);
 	gameobj[4]->Scale(0.1f);
 
 }
 
-void Game::Update(GLuint program, bool forceOn, bool switchGrav)
+//bool Game::CanRenderLights(GameEntity obj, Light light)
+//{
+//	glm::vec3 vecDist = light.lightPos - obj.transform.position;
+//	float dist = glm::length(vecDist);
+//
+//	if(dist < (light.lightRadius + obj.radius))
+//	{
+//		return true;
+//	}
+//	return false;
+//}
+
+void Game::Update(GLuint program)
 {
-	if (forceOn)
+	if (input->IsKeyDown(GLFW_KEY_LEFT))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.5f, 0.0f, 0.0f));
+		gameobj[4]->ApplyForce(glm::vec3(-0.3f, 0.0f, 0.0f));
 	}
-	for(unsigned int i = 0; i < gameobj.size(); i++)
+	if (input->IsKeyDown(GLFW_KEY_RIGHT))
 	{
-		(gameobj)[i]->Update();
-		if(switchGrav != prevSwitch && prevSwitch == false)
+		gameobj[4]->ApplyForce(glm::vec3(0.3f, 0.0f, 0.0f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_UP))
+	{
+		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, -0.3f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_DOWN))
+	{
+		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, 0.3f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_O))
+	{
+		light1.lightRadius -= 0.1f;
+	}
+	if (input->IsKeyDown(GLFW_KEY_P))
+	{
+		light1.lightRadius += 0.1f;
+	}
+	if (input->IsKeyPressed(GLFW_KEY_G))
+	{
+		for (unsigned int i = 0; i < gameobj.size(); i++)
 		{
-			if((gameobj)[i]->applyGrav)
+			if ((gameobj)[i]->applyGrav)
 			{
 				(gameobj)[i]->applyGrav = false;
 			}
@@ -95,6 +134,11 @@ void Game::Update(GLuint program, bool forceOn, bool switchGrav)
 			}
 		}
 	}
+	for(unsigned int i = 0; i < gameobj.size(); i++)
+	{
+		(gameobj)[i]->Update();
+		glUniform1f(14, light1.lightRadius);
+	}
 	(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
 	//gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
 	gameobj[2]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
@@ -102,7 +146,8 @@ void Game::Update(GLuint program, bool forceOn, bool switchGrav)
 	
 
 	glUniform3f(9, light1.lightPos.x, light1.lightPos.y, light1.lightPos.z);
+	glUniform1f(11, light1.lightIntensity);
+	glUniform4f(12, light1.ambient.x, light1.ambient.y, light1.ambient.z, light1.ambient.w);
 
 	rend->Update(program);
-	prevSwitch = switchGrav;
 }

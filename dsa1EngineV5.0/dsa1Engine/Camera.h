@@ -1,4 +1,5 @@
 #pragma once
+#include "InputManager.h"
 #include <glm\glm.hpp>
 #include <GLFW\glfw3.h>
 #include <glm/gtx/transform.hpp>
@@ -7,7 +8,7 @@ class Camera
 {
 public:
 	Camera();
-	Camera(GLFWwindow &window);
+	Camera(GLFWwindow &window, InputManager &ip);
 	~Camera();
 
 	glm::vec3 camPos;
@@ -21,7 +22,11 @@ public:
 	glm::mat4 viewMatrix;
 	glm::mat4 ProjectMatrix;
 
+	InputManager *input;
 	GLFWwindow* window;
+
+	bool currentMouseClick;
+	bool previousMouseClick;
 
 	int width;
 	int height;
@@ -30,7 +35,7 @@ public:
 	void SetView();
 	void SetProjection();
 	void ResetCamera();
-	void UpdateCam(bool left, bool right, bool foward, bool backward, bool up, bool down, bool sprint, bool mousePress, bool reset, float dt);
+	void UpdateCam(float dt);
 
 
 private:

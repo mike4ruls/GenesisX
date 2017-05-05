@@ -28,8 +28,8 @@ void Renderer::Update(GLuint program)
 		glUniformMatrix4fv(4, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
 		glUniform1f(7, time);
 		glUniform3f(8, cam->camPos.x, cam->camPos.y, cam->camPos.z);
-
 		glUniform1i(10, gameObjs[i]->objMesh.hasTex);
+		glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
 		if (gameObjs[i]->objMesh.hasTex)
 		{
 			glBindTexture(GL_TEXTURE_2D, gameObjs[i]->objMesh.GetTexId());

@@ -7,11 +7,14 @@ Camera::Camera()
 	t0 = 0;
 	t = 0;
 	dt = 0;
+	currentMouseClick = false;
 }
 
-Camera::Camera(GLFWwindow &w)
+Camera::Camera(GLFWwindow &w, InputManager &ip)
 {
 	window = &w;
+	input = &ip;
+
 	t0 = 0;
 	t = 0;
 	dt = 0;
@@ -23,6 +26,8 @@ Camera::Camera(GLFWwindow &w)
 
 	glfwGetWindowSize(window, &width, &height);
 	glfwSetCursorPos(window, width / 2, height / 2);
+
+	currentMouseClick = false;
 
 	SetView();
 	SetProjection();
@@ -62,9 +67,21 @@ void Camera::ResetCamera()
 	SetProjection();
 }
 
-void Camera::UpdateCam(bool left, bool right, bool foward, bool backward, bool up, bool down, bool sprint, bool mousePress, bool reset, float dt)
+void Camera::UpdateCam(float dt)
 {
-	if(mousePress)
+	if (input->IsMouseClick(GLFW_MOUSE_BUTTON_1))
+	{
+		printf("Mouse CLICKUUUUUU");
+		currentMouseClick = true;
+	}
+	if (currentMouseClick == true && previousMouseClick == false)
+	{
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		glfwSetCursorPos(window, width * 0.5f, height * 0.5f);
+	}
+
+	if(currentMouseClick)
 	{
 		float sens = 0.005f;
 		double x, y;
@@ -74,43 +91,44 @@ void Camera::UpdateCam(bool left, bool right, bool foward, bool backward, bool u
 		camRot.x -= glm::clamp(camRot.z, -0.5f*3.145f, 0.5f*3.145f);
 		glfwSetCursorPos(window, width * 0.5f, height * 0.5f);
 	}
-	if(reset)
+	if (input->IsKeyDown(GLFW_KEY_LEFT_CONTROL) && input->IsKeyDown(GLFW_KEY_C))
 	{
 		ResetCamera();
 	}
 
 	camVel = {};
 	glm::mat3 R = (glm::mat3)glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
-	
-	if(left)
+	if (input->IsKeyDown(GLFW_KEY_A))
 	{
 		camVel += R*glm::vec3(-0.001, 0, 0);
 	}
-	if (right)
+	if (input->IsKeyDown(GLFW_KEY_D))
 	{
 		camVel += R*glm::vec3(0.001, 0, 0);
 	}
-	if (foward)
+	if (input->IsKeyDown(GLFW_KEY_W))
 	{
 		camVel += R*glm::vec3(0, 0, -0.001);
 	}
-	if (backward)
+	if (input->IsKeyDown(GLFW_KEY_S))
 	{
 		camVel += R*glm::vec3(0, 0, 0.001);
 	}
-	if (up)
+	if (input->IsKeyDown(GLFW_KEY_SPACE))
 	{
 		camVel += R*glm::vec3(0, 0.001, 0);
 	}
-	if (down)
+	if (input->IsKeyDown(GLFW_KEY_X))
 	{
 		camVel += R*glm::vec3(0, -0.001, 0);
 	}
 
+
+
 	float speed = 1.0f;
 	if(camVel != glm::vec3())
 	{
-		if(sprint)
+		if (input->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
 		{
 			camVel = glm::normalize(camVel) * sprintSpeed;
 		}
@@ -121,5 +139,7 @@ void Camera::UpdateCam(bool left, bool right, bool foward, bool backward, bool u
 	}
 
 	camPos += camVel * dt;
+	previousMouseClick = currentMouseClick;
+	currentMouseClick = false;
 }
 

@@ -17,6 +17,7 @@ layout (location = 9) uniform vec3 lPos;
 
 struct OutPut
 {
+    vec4 pos;
 	vec4 fragPos;
 	vec4 camPos;
 	vec4 lightPos;
@@ -31,11 +32,17 @@ out OutPut input;
 void main()
 {
 		mat4 worldViewProj = proj * view * worldPos;
+		vec4 norm = vec4(Input.normal, 0);
+
+		input.pos = worldPos * vec4(Input.position, 1);
 		input.fragPos = worldViewProj * vec4(Input.position, 1);
 		input.camPos = vec4(camP, 1);
 		input.lightPos = vec4(lPos, 1);
-		//input.norm = worldViewProj*vec4(Input.normal,0);
-		input.norm = transpose(inverse(worldViewProj))*vec4(Input.normal,0);
+		//input.norm = norm;
+		input.norm = worldViewProj*norm;
+		//input.norm = inverse(worldViewProj)*norm;
+		//input.norm = transpose(inverse(worldViewProj))*norm;
+		input.norm = normalize(input.norm);
 		input.uv = Input.uv;
 		input.color = Input.color;
 		input.time = t;

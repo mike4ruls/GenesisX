@@ -72,21 +72,9 @@ Mesh::Mesh(std::string filename)
 		}
 		inFile.close();
 	}
-	for(unsigned int i = 0; i < pos.size(); i++)
-	{
-		Vertex newVert;
-		newVert.pos = pos[i];
-		newVert.uv = uv[i];
-		newVert.normal = nor[i];
-		newVert.color = {0.5f,0.5f,0.5f,1.0f};
-		verts.push_back(newVert);
-	}
-	for (unsigned int j = 0; j < in.size(); j++)
-	{
-		ind.push_back(in[j].posInd - 1);
-	}
-	count = ind.size();
-	CreateBuffer();
+	moreInd = in;
+	count = moreInd.size();
+	CreateModelLoadingBuffer(pos,uv, nor);
 }
 
 Mesh::~Mesh()
@@ -124,6 +112,69 @@ void Mesh::LoadTexture(char * filename)
 GLuint Mesh::GetTexId()
 {
 	return texID;
+}
+void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm::vec2> uv, std::vector<glm::vec3> nor)
+{
+	std::vector<Vertex> vertBufData;
+
+	for (unsigned int i = 0; i < count; i++)
+	{
+			Vertex newVert;
+			newVert.pos = pos[moreInd[i].posInd - 1];
+			newVert.uv = uv[moreInd[i].uvInd - 1];
+			newVert.normal = nor[moreInd[i].normInd - 1];
+			newVert.color = { 0.5f,0.5f,0.5f,1.0f };
+			vertBufData.push_back(newVert);
+	}
+	verts = vertBufData;
+	// generating buffer and storing their addresses to out init variables
+	glGenVertexArrays(1, &vertArr);
+	glGenBuffers(1, &vertBuf);
+
+	// placing our buffer on the machine
+	glBindVertexArray(vertArr);
+	glBindBuffer(GL_ARRAY_BUFFER, vertBuf);
+
+	// binding our data to the buffer on the machine, know they wont change in size not matter what
+	glBufferData(GL_ARRAY_BUFFER,
+		sizeof(Vertex)*count,
+		&vertBufData[0],
+		GL_STATIC_DRAW);
+
+	// letting the computer know how the buffer is structured
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(0, // the index
+		3, // number of components to expect(x,y,z)
+		GL_FLOAT, // Type of data
+		GL_FALSE, // should we normalize the data
+		sizeof(Vertex), // stride
+		0); // the offset 
+
+	glVertexAttribPointer(1,
+		2, // number of components to expect(u,v)
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		reinterpret_cast<void *>(offsetof(Vertex, uv)));
+
+	glVertexAttribPointer(2,
+		3,// number of components to expect(x,y,z)
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		reinterpret_cast<void *>(offsetof(Vertex, normal)));
+
+	glVertexAttribPointer(3,
+		4,// number of components to expect(r,g,b,a)
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		reinterpret_cast<void *>(offsetof(Vertex, color)));
+	glBindVertexArray(0);
+	specular = glm::vec4(2.0f,2.0f,2.0f,2.0f);
 }
 
 void Mesh::CreateBuffer()
@@ -182,4 +233,5 @@ void Mesh::CreateBuffer()
 			sizeof(Vertex),
 			reinterpret_cast<void *>(offsetof(Vertex, color)));
 	glBindVertexArray(0);
+	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
 }

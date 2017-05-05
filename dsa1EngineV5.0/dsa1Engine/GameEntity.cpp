@@ -88,6 +88,7 @@ void GameEntity::ResetGameEntity()
 	ridgidBody.friction = { 0.0f,0.0f,0.0f };
 	ridgidBody.mass = 1.0f;
 
+	radius = FindRadius();
 	SetWorldPos();
 }
 GLuint GameEntity::GetVertArr()
@@ -108,6 +109,53 @@ void GameEntity::SetTag(std::string tagName)
 std::string GameEntity::GetTag()
 {
 	return tag;
+}
+float GameEntity::FindRadius()
+{
+	float largestRad = 0;
+	for(unsigned int i = 0; i< objMesh.verts.size();i++)
+	{
+		glm::vec3 pos = objMesh.verts[i].pos * transform.scale;
+		float x = glm::abs(pos.x);
+		float y = glm::abs(pos.y);
+		float z = glm::abs(pos.z);
+		if( x > y && x > z)
+		{
+			if(x > largestRad)
+			{
+				largestRad = x;
+			}
+		}
+		else if (y > x && y > z)
+		{
+			if (y > largestRad)
+			{
+				largestRad = y;
+			}
+		}
+		else if (z > y && z > x)
+		{
+			if (z > largestRad)
+			{
+				largestRad = z;
+			}
+		}
+		else if(x == y || x == z)
+		{
+			if (x > largestRad)
+			{
+				largestRad = x;
+			}
+		}
+		else if (y == z)
+		{
+			if (y > largestRad)
+			{
+				largestRad = y;
+			}
+		}
+	}
+	return largestRad;
 }
 
 #pragma region Tranform Methods
@@ -136,6 +184,7 @@ void GameEntity::Scale(glm::vec3 scaleVec)
 	transform.scale.y = scaleVec.y;
 	transform.scale.z = scaleVec.z;
 
+	radius = FindRadius();
 	SetWorldPos();
 }
 
@@ -145,6 +194,7 @@ void GameEntity::Scale(float x, float y, float z)
 	transform.scale.y = y;
 	transform.scale.z = z;
 
+	radius = FindRadius();
 	SetWorldPos();
 }
 
@@ -154,6 +204,7 @@ void GameEntity::Scale(float c)
 	transform.scale.y = c;
 	transform.scale.z = c;
 
+	radius = FindRadius();
 	SetWorldPos();
 }
 

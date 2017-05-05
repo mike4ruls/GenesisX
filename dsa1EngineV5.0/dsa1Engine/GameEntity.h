@@ -46,8 +46,10 @@ public:
 	void ApplyGravity();
 	void CalculateFric();
 	void UpdateVelocity();
+	float FindRadius();
 
 	bool applyGrav;
+	float radius;
 	float maxSpeed;
 	float fricStrength;
 	glm::vec3 gravity;

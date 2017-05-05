@@ -1,16 +1,18 @@
 #pragma once
+#include "InputManager.h"
 #include "Renderer.h"
 #include "Light.h"
 class Game
 {
 public:
-	Game(Renderer *r);
+	Game(Renderer &r, InputManager &ip);
 	~Game();
 
 	void CreateMeshes();
-	void Update(GLuint program, bool forceOn, bool switchGrav);
-	bool prevSwitch;
+	//bool CanRenderLights(GameEntity obj, Light light);
+	void Update(GLuint program);
 
+	InputManager *input;
 	Renderer* rend;
 	Light light1;
 

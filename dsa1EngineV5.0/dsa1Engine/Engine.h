@@ -1,10 +1,8 @@
 #pragma once
 #include "Timer.h"
 #include "ShaderManager.h"
-#include <map>
 #include "Camera.h"
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+
 #include <glm\glm.hpp>
 
 class Engine
@@ -19,15 +17,15 @@ public:
 	bool gameLoop();
 	bool useShader();
 
-	bool currentMouseClick;
-	bool previousMouseClick;
+
 
 	GLFWwindow* GLFWwindowPtr;
 	Camera* mainCam;
+	InputManager input;
 
 	static void Start();
 	static void Stop();
-	static void Update();
+	static void Update(GLFWwindow* window, int fps);
 
 	static Timer time;
 private:
