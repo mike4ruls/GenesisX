@@ -8,7 +8,7 @@ layout (location = 0) in struct Vertex
 	vec4 color;
 } Input;
 
-layout (location = 4) uniform mat4 worldPos;
+layout (location = 4) uniform mat4 modelWorld;
 layout (location = 5) uniform mat4 view;
 layout (location = 6) uniform mat4 proj;
 layout (location = 7) uniform float t;
@@ -31,17 +31,17 @@ out OutPut input;
 
 void main()
 {
-		mat4 worldViewProj = proj * view * worldPos;
+		mat4 worldViewProj = proj * view * modelWorld;
 		vec4 norm = vec4(Input.normal, 0);
 
-		input.pos = worldPos * vec4(Input.position, 1);
+		input.pos = modelWorld * vec4(Input.position, 1);
 		input.fragPos = worldViewProj * vec4(Input.position, 1);
 		input.camPos = vec4(camP, 1);
 		input.lightPos = vec4(lPos, 1);
 		//input.norm = norm;
-		input.norm = worldViewProj*norm;
+		//input.norm = worldViewProj*norm;
 		//input.norm = inverse(worldViewProj)*norm;
-		//input.norm = transpose(inverse(worldViewProj))*norm;
+		input.norm = transpose(inverse(modelWorld))*norm;
 		input.norm = normalize(input.norm);
 		input.uv = Input.uv;
 		input.color = Input.color;

@@ -75,7 +75,7 @@ void GameEntity::ResetGameEntity()
 {
 	worldPos = glm::mat4(1.0f);
 	applyGrav = false;
-	maxSpeed = 1.0f;
+	maxSpeed = 0.3f;
 	fricStrength = 0.2f;
 	gravity = {0,-1.0f,0};
 

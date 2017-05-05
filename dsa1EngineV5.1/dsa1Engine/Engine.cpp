@@ -53,8 +53,10 @@ bool Engine::gameLoop()
 		glUniformMatrix4fv(5, 1, GL_FALSE, &mainCam->viewMatrix[0][0]);
 		glUniformMatrix4fv(6, 1, GL_FALSE, &mainCam->ProjectMatrix[0][0]);\
 
-		const char* titleName = "Michael Ray DSA1 Engine Fps: " + (int)Engine::time.fps;
-		Engine::Update(GLFWwindowPtr, (int)Engine::time.fps);
+		std::string titleName = "Michael Ray DSA1 Engine Fps: ";
+		titleName.push_back((int)(15));
+		glfwSetWindowTitle(GLFWwindowPtr, &titleName[0]);
+		Engine::Update(GLFWwindowPtr, titleName);
 		myGame->Update(shaderM.GetProgram());
 
 		// swap chain
@@ -88,11 +90,11 @@ void Engine::Stop()
 	
 }
 
-void Engine::Update(GLFWwindow* window, int fps)
+void Engine::Update(GLFWwindow* window, std::string title)
 {
 	time.Update();
 	system("cls");
-	glfwSetWindowTitle(window, "Michael Ray DSA1 Engine Fps: " + fps);
+	//glfwSetWindowTitle(window, &title[0]);
 }
 Timer Engine::time;
 

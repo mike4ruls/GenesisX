@@ -1,9 +1,19 @@
 #version 430
+
+struct Light{
+	vec3 lightPos;
+	vec3 lightDir;
+	vec3 Ambient;
+	float lightIntensity;
+	float lightRad;
+};
+
 layout (location = 10) uniform bool hasT;
 layout (location = 11) uniform float lightIntensity;
 layout (location = 12) uniform vec4 Ambient;
 layout (location = 13) uniform vec4 Spec;
 layout (location = 14) uniform float lightRad;
+layout (location = 15) uniform Light lig[];
 uniform sampler2D myTexture;
 
 struct OutPut
@@ -22,6 +32,7 @@ in OutPut input;
 
 void main()
 {
+	const Light lights[] = lig;
 	vec4 color;
 	//color = vec4(1,0,0,1);
 	color = input.color;
@@ -32,7 +43,7 @@ void main()
 	{
 		color = texture(myTexture, input.uv);
 	}
-	color = color / 3;
+	color = color / 2;
 	vec4 D = input.pos - input.lightPos;
 	bool rendLight = false;
 	
@@ -44,27 +55,24 @@ void main()
 
 	if(rendLight)
 	{
-	float fade = (lightRad - dist) / lightRad; 
+		float fade = (lightRad - dist) / lightRad; 
 
-	vec4 L = input.fragPos - input.lightPos;
-	vec4 E = input.fragPos - input.camPos;
-	vec4 H =  L + E;
+		vec4 L = input.lightPos - input.pos ;
+		vec4 E = input.pos - input.camPos;
+		vec4 H =  L+E;
 
-	//vec4 Diffuse = color * dot(L,input.norm);
+		// SpotLight effect
+		//float light =  clamp(dot(-L,input.norm),0.0, lightIntensity);
 
-	// SpotLight effect
-	//float light =  clamp(dot(L,input.norm),0.0, lightIntensity);
+		// light intensity based on distance from light
+		float light =   clamp(dot(L,input.norm),0.0,lightIntensity*fade);
+		vec4 Specular = (Spec * color) * max(dot(H, input.norm),0.0);
 
-	// light intensity based on distance from light
-	float light =  clamp(dot(L,input.norm),0.0, lightIntensity*fade);
-	vec4 Specular = (Spec * color) * max(dot(H, input.norm),0.0);
+		vec4 brightness = (Ambient + Specular) * light;
 
-	//vec4 brightness = Ambient + Diffuse + Specular;
-	vec4 brightness = (Ambient + Specular) * light;
-
-	//color = brightness;
-	color += brightness;
-	//color = input.norm;
+		//color = brightness;
+		color += brightness;
+		//color = input.norm;
 	}
 
 	gl_FragColor = color;

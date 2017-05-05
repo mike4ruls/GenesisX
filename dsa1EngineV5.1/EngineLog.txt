@@ -95,3 +95,7 @@ out pretty well
 -Light sources now hold ambience data
 -Added InputManager Class, moved all input code to approprate spots
 -Left, Right, Up, and Down keys move the ray gun model left, right, foward, and backwards using forces
+
+===Version 5.1=== 3/31/17
+-Ok NOW I actually fixed lights in the engine(normal calculations were messed up)
+-Can now swap between different ambiences of light

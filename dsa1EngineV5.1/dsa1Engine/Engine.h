@@ -25,7 +25,7 @@ public:
 
 	static void Start();
 	static void Stop();
-	static void Update(GLFWwindow* window, int fps);
+	static void Update(GLFWwindow* window, std::string title);
 
 	static Timer time;
 private:

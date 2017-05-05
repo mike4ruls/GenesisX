@@ -4,10 +4,10 @@ Game::Game(Renderer &r, InputManager &ip)
 {
 	rend = &r;
 	input = &ip;
-	light1 = Light("Light1", 0.4f, glm::vec3(-2, 1, 2), glm::vec3(0, 0, 0), rend);
+	light1 = Light("Light1", 1.0f, glm::vec3(-2, 1, 2), glm::vec3(0, 0, 0), rend);
 	 
 	// adds blue ambient to light
-	light1.ambient = {0.0f,0.0f,5.0f,1.0f};
+	//light1.ambient = {0.0f,0.0f,5.0f,1.0f};
 	CreateMeshes();
 }
 
@@ -60,6 +60,7 @@ void Game::CreateMeshes()
 	gameobj.push_back(new GameEntity("more pizza","models/box.obj", rend));
 	gameobj.push_back(new GameEntity("too much pizza", "models/teapot.obj", rend));
 	gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
+	gameobj.push_back(new GameEntity("lots pizza", "models/HaloSword.obj", rend));
 
 	// setting box settings
 	gameobj[2]->Scale(0.1f);
@@ -80,6 +81,9 @@ void Game::CreateMeshes()
 	gameobj[4]->Rotate(0, 45, 0);
 	gameobj[4]->Scale(0.1f);
 
+	gameobj[5]->objMesh.specular = { 11,11,11,11 };
+	gameobj[5]->Rotate(0, 1.5, 0);
+	gameobj[5]->Scale(0.1f);
 }
 
 //bool Game::CanRenderLights(GameEntity obj, Light light)
@@ -96,30 +100,59 @@ void Game::CreateMeshes()
 
 void Game::Update(GLuint program)
 {
+	float speed = 0.25f;
 	if (input->IsKeyDown(GLFW_KEY_LEFT))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(-0.3f, 0.0f, 0.0f));
+		gameobj[4]->ApplyForce(glm::vec3(-speed, 0.0f, 0.0f));
 	}
 	if (input->IsKeyDown(GLFW_KEY_RIGHT))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.3f, 0.0f, 0.0f));
+		gameobj[4]->ApplyForce(glm::vec3(speed, 0.0f, 0.0f));
 	}
 	if (input->IsKeyDown(GLFW_KEY_UP))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, -0.3f));
+		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, -speed));
 	}
 	if (input->IsKeyDown(GLFW_KEY_DOWN))
 	{
-		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, 0.3f));
+		gameobj[4]->ApplyForce(glm::vec3(0.0f, 0.0f, speed));
+	}
+	if (input->IsKeyDown(GLFW_KEY_LEFT_BRACKET))
+	{
+		gameobj[5]->Rotate(0.0f,-0.1f,0.0f);
+	}
+	if (input->IsKeyDown(GLFW_KEY_RIGHT_BRACKET))
+	{
+		gameobj[5]->Rotate(0.0f, 0.1f, 0.0f);
 	}
 	if (input->IsKeyDown(GLFW_KEY_O))
 	{
-		light1.lightRadius -= 0.1f;
+		light1.myLight.lightRadius -= 0.1f;
 	}
 	if (input->IsKeyDown(GLFW_KEY_P))
 	{
-		light1.lightRadius += 0.1f;
+		light1.myLight.lightRadius += 0.1f;
 	}
+
+
+	if (input->IsKeyDown(GLFW_KEY_0))
+	{
+		light1.myLight.ambient = { 0.0f,0.0f,0.0f,1.0f };
+	}
+	if (input->IsKeyDown(GLFW_KEY_1))
+	{
+		light1.myLight.ambient = { 5.0f,0.0f,0.0f,1.0f };
+	}
+	if (input->IsKeyDown(GLFW_KEY_2))
+	{
+		light1.myLight.ambient = { 0.0f,5.0f,0.0f,1.0f };
+	}
+	if (input->IsKeyDown(GLFW_KEY_3))
+	{
+		light1.myLight.ambient = { 0.0f,0.0f,5.0f,1.0f };
+	}
+
+
 	if (input->IsKeyPressed(GLFW_KEY_G))
 	{
 		for (unsigned int i = 0; i < gameobj.size(); i++)
@@ -137,7 +170,7 @@ void Game::Update(GLuint program)
 	for(unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		(gameobj)[i]->Update();
-		glUniform1f(14, light1.lightRadius);
+		glUniform1f(14, light1.myLight.lightRadius);
 	}
 	(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
 	//gameobj[2]->Scale(abs(sin(Engine::time.t))/5.0f);
@@ -145,9 +178,9 @@ void Game::Update(GLuint program)
 	gameobj[3]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
 	
 
-	glUniform3f(9, light1.lightPos.x, light1.lightPos.y, light1.lightPos.z);
-	glUniform1f(11, light1.lightIntensity);
-	glUniform4f(12, light1.ambient.x, light1.ambient.y, light1.ambient.z, light1.ambient.w);
+	glUniform3f(9, light1.myLight.lightPos.x, light1.myLight.lightPos.y, light1.myLight.lightPos.z);
+	glUniform1f(11, light1.myLight.lightIntensity);
+	glUniform4f(12, light1.myLight.ambient.x, light1.myLight.ambient.y, light1.myLight.ambient.z, light1.myLight.ambient.w);
 
 	rend->Update(program);
 }
