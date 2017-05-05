@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Mesh.h"
 #include "Object.h"
 #include "Engine.h"
@@ -8,9 +9,9 @@ class GameEntity
 	:Object
 {
 public:
-	GameEntity();
-	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i);
-	GameEntity(std::string nm, Mesh &oM);
+	GameEntity(void *r);
+	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r);
+	GameEntity(std::string nm, Mesh &oM, void *r);
 	~GameEntity() override;
 
 	void Update() override;
@@ -24,6 +25,7 @@ public:
 	glm::mat4x4 worldPos;
 	
 	std::string name;
+	unsigned int rendID;
 	Mesh objMesh;
 
 	void Translate(float x, float y, float z);
@@ -36,6 +38,6 @@ private:
 	glm::vec3 scale;
 	glm::vec3 rotation;
 
-
+	void* rend;
 };
 

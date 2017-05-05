@@ -11,7 +11,3 @@ Object::~Object()
 {
 }
 
-void Object::Render()
-{
-	printf("Rendering %s", &tag[0]);
-}

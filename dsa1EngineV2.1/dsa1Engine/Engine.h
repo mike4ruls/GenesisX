@@ -1,6 +1,7 @@
 #pragma once
 #include "Timer.h"
 
+
 class Engine
 {
 public:
@@ -8,6 +9,9 @@ public:
 	~Engine();
 
 	// What does static do?
+	bool Init();
+	bool gameLoop();
+
 	static void Start();
 	static void Stop();
 	static void Update();

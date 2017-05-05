@@ -8,7 +8,6 @@ public:
 	virtual ~Object();
 
 	virtual void Update() = 0;
-	void Render();
 
 	std::string tag;
 private:

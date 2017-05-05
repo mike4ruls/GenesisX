@@ -1,39 +1,48 @@
 #include "GameEntity.h"
+#include "Renderer.h"
 
 
 
-GameEntity::GameEntity()
+GameEntity::GameEntity(void *r)
 	:Object()
 {
 	name = "";
 	tag = "GameObject";
 	objMesh = Mesh();
+	rend = r;
+	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	ResetGameEntity();
 }
-GameEntity::GameEntity(std::string nm, Mesh &oM)
+GameEntity::GameEntity(std::string nm, Mesh &oM, void *r)
 	:Object()
 {
 	name = nm;
 	tag = "GameObject";
 	objMesh = oM;
+	rend = r;
+	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	ResetGameEntity();
 }
-GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i)
+GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r)
 	:Object()
 {
 	name = nm;
 	tag = "GameObject";
 	objMesh = Mesh(v, i);
+	rend = r;
+	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	ResetGameEntity();
 }
 
 GameEntity::~GameEntity()
 {
+	//((Renderer*)rend)->RemoveFromRenderer(rendID);
 }
 void GameEntity::Update()
 {
 	printf("updating at time %f\n", Engine::time.t);
-	Render();
+	printf("Rendering %s", &tag[0]);
+	
 }
 void GameEntity::SetWorldPos()
 {

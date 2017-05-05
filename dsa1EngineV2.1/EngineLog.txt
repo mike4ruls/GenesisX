@@ -22,3 +22,7 @@
 -Added necessary methods for transformations, scale, and rotation inside Game Enity class
 (NOTE: Can't implement them though because I don't know how to use openGL's math library ;-;
 Also I need to get my vertex and pixel shader up and running before I can even use them anyways)
+
+===Version 2.5===
+-Added dynamic rendering for my game objects
+(Basically they automatically add them selves to the render to be rendered on their own)
