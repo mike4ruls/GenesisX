@@ -43,12 +43,35 @@ void Mesh::CreateBuffer()
 
 	// letting the computer know how the buffer is structured
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(0, // the index
 		3, // number of components to expect(x,y,z)
 		GL_FLOAT, // Type of data
 		GL_FALSE, // should we normalize the data
 		sizeof(Vertex), // stride
 		0); // the offset 
-			// unbind after all the settings are changed and correct
+	
+		glVertexAttribPointer(1,
+			2, // number of components to expect(u,v)
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vertex),
+			reinterpret_cast<void *>(offsetof(Vertex, uv)));
+
+		glVertexAttribPointer(2,
+			3,// number of components to expect(x,y,z)
+			GL_FLOAT, 
+			GL_FALSE, 
+			sizeof(Vertex), 
+			reinterpret_cast<void *>(offsetof(Vertex, normal)));
+
+		glVertexAttribPointer(3,
+			4,// number of components to expect(r,g,b,a)
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vertex),
+			reinterpret_cast<void *>(offsetof(Vertex, color)));
 	glBindVertexArray(0);
 }

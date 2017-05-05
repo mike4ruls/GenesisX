@@ -3,6 +3,7 @@
 #include "Mesh.h"
 #include "Object.h"
 #include "Engine.h"
+#include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 class GameEntity
@@ -22,7 +23,7 @@ public:
 	GLuint GetVertArr();
 	unsigned int GetCount();
 
-	glm::mat4x4 worldPos;
+	glm::mat4 worldPos;
 	
 	std::string name;
 	unsigned int rendID;

@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "ShaderManager.h"
 #include <GL\glew.h>
 #include <FreeImage.h>
 #include "GameEntity.h"
@@ -11,7 +12,7 @@ public:
 	Renderer();
 	~Renderer();
 
-	void Update();
+	void Update(GLuint program);
 	unsigned int AddToRenderer(GameEntity &obj);
 	void RemoveFromRenderer(unsigned int pos);
 

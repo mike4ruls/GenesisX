@@ -31,3 +31,8 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 -Moved Basic window creation and game loop to the engine class
 -Added Shader Manager Class
 -Finally got Verter Shader and Pixel Shader implemented and working
+
+===Version 3.3===
+-Modified the vertex shader to accept a struct of vertex information coming in
+-Added more information to my vertex (uv's, normals, color)
+-Added mouse and keyboard input

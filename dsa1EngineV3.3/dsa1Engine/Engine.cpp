@@ -1,6 +1,17 @@
 #include "Engine.h"
 #include "Game.h"
 
+std::map<int, bool> keyIsDown;
+std::map<int, bool> keyWasDown;
+void MouseClick(GLFWwindow* winPtr, int button, int action, int mods)
+{
+	keyIsDown[button] = action;
+}
+void KeyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
+{
+	keyIsDown[key] = action;
+}
+
 Engine::Engine()
 {
 	shaderM = ShaderManager();
@@ -20,6 +31,8 @@ bool Engine::Init()
 
 	if (glewInit() != GLEW_OK) { glfwTerminate(); return false; }
 
+	glfwSetMouseButtonCallback(GLFWwindowPtr, MouseClick);
+	glfwSetKeyCallback(GLFWwindowPtr, KeyCallback);
 	return true;
 }
 bool Engine::bufferModel()
@@ -34,10 +47,21 @@ bool Engine::gameLoop()
 	while (!glfwWindowShouldClose(GLFWwindowPtr))
 	{
 		Engine::Update();
-		myGame->Update();
+		myGame->Update(shaderM.GetProgram());
 
 		// swap chain
 		glfwSwapBuffers(GLFWwindowPtr);
+
+		// Checking Input
+		keyWasDown = keyIsDown;
+		if (keyIsDown[GLFW_KEY_ESCAPE])
+		{
+			glfwSetWindowShouldClose(GLFWwindowPtr, GL_TRUE);
+		}
+		if(keyIsDown[GLFW_MOUSE_BUTTON_1])
+		{
+			printf("Mouse CLICKUUUUUU");
+		}
 		glfwPollEvents();
 	}
 
@@ -71,3 +95,4 @@ void Engine::Update()
 	system("cls");
 }
 Timer Engine::time;
+

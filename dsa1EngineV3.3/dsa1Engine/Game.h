@@ -7,7 +7,7 @@ public:
 	~Game();
 
 	void CreateMeshes();
-	void Update();
+	void Update(GLuint program);
 
 	Renderer* rend;
 

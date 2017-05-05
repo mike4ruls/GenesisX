@@ -46,18 +46,18 @@ void GameEntity::Update()
 }
 void GameEntity::SetWorldPos()
 {
-	
+	glm::mat4 myTrans = glm::translate(position);
+	glm::mat4 myScale = glm::scale(scale);
+
+	worldPos = myTrans * myScale;
 }
 void GameEntity::ResetGameEntity()
 {
-	worldPos = { 1.0f,0.0f,0.0f,0.0f,
-				0.0f,1.0f,0.0f,0.0f,
-				0.0f,0.0f,1.0f,0.0f,
-				0.0f,0.0f,0.0f,1.0f };
+	worldPos = glm::mat4(1.0f);
 
-	position = {0.0f,0.0f,0.0f };
-	scale = { 1.0f,1.0f,1.0f };
-	rotation = { 0.0f,0.0f,0.0f };
+	position = {0.0f,0.0f,0.0f};
+	scale = { 1.0f,1.0f,1.0f};
+	rotation = { 0.0f,0.0f,0.0f};
 
 	SetWorldPos();
 }
