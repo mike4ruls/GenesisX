@@ -24,7 +24,7 @@ void Renderer::Update(GLuint program)
 		//GLuint MatrixID = glGetUniformLocation(program, "worldPos");
 		//glUseProgram(program);
 		glUniformMatrix4fv(4, 1, GL_FALSE, &(gameObjs)[i]->worldPos[0][0]);
-		glUniform1f(5, time);
+		glUniform1f(7, time);
 
 		glBindVertexArray((gameObjs)[i]->GetVertArr());
 		glDrawArrays(GL_TRIANGLES, 0, (gameObjs)[i]->GetCount());

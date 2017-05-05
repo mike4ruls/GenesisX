@@ -12,6 +12,8 @@ public:
 	Renderer();
 	~Renderer();
 
+
+
 	void Update(GLuint program);
 	unsigned int AddToRenderer(GameEntity &obj);
 	void RemoveFromRenderer(unsigned int pos);

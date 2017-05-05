@@ -48,8 +48,9 @@ void GameEntity::SetWorldPos()
 {
 	glm::mat4 myTrans = glm::translate(position);
 	glm::mat4 myScale = glm::scale(scale);
+	glm::mat4 myRot = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
 
-	worldPos = myTrans * myScale;
+	worldPos = myTrans * myRot * myScale;
 }
 void GameEntity::ResetGameEntity()
 {

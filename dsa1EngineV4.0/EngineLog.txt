@@ -36,3 +36,10 @@ Also I need to get my vertex and pixel shader up and running before I can even u
 -Modified the vertex shader to accept a struct of vertex information coming in
 -Added more information to my vertex (uv's, normals, color)
 -Added mouse and keyboard input
+
+===Version 4.0===
+-Added movable camera that moves and rotates
+-Added input to move up, down, left, right, foward, backward
+-Added sprinting with LEFT SHIFT
+-Added 3-D cube mesh to view in the engine
+-Added cycling colors that change over time

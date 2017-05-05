@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "ShaderManager.h"
 #include <map>
+#include "Camera.h"
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm\glm.hpp>
@@ -18,7 +19,11 @@ public:
 	bool gameLoop();
 	bool useShader();
 
+	bool currentMouseClick;
+	bool previousMouseClick;
+
 	GLFWwindow* GLFWwindowPtr;
+	Camera* mainCam;
 
 	static void Start();
 	static void Stop();

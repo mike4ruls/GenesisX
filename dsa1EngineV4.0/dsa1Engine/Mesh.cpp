@@ -12,7 +12,49 @@ Mesh::Mesh(std::vector<Vertex> &v, std::vector<unsigned int> &i)
 	count = ind.size();
 	CreateBuffer();
 }
+Mesh::Mesh(std::string filename)
+{
+	using namespace std;
+	ifstream inFile;
+	string info;
 
+	vector<glm::vec3> pos;
+	vector<glm::vec2> uv;
+	vector<glm::vec3> nor;
+	vector<unsigned int> in;
+
+	inFile.open(filename);
+	if(inFile.is_open())
+	{
+		while(getline(inFile, info))
+		{
+			char type;
+			istringstream ss(info);
+
+			ss >> type;
+			if(type == 'v')
+			{
+			
+			}
+			else if (type == 'vt')
+			{
+
+			}
+			else if (type == 'vn')
+			{
+
+			}
+			else if (type == 'f')
+			{
+
+			}
+		}
+		inFile.close();
+	}
+	
+
+
+}
 
 Mesh::~Mesh()
 {

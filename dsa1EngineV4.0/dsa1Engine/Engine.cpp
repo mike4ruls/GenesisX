@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <GL/GLU.h>
 #include "Game.h"
 
 std::map<int, bool> keyIsDown;
@@ -14,6 +15,7 @@ void KeyCallback(GLFWwindow* win, int key, int scancode, int action, int mods)
 
 Engine::Engine()
 {
+	
 	shaderM = ShaderManager();
 }
 
@@ -33,6 +35,9 @@ bool Engine::Init()
 
 	glfwSetMouseButtonCallback(GLFWwindowPtr, MouseClick);
 	glfwSetKeyCallback(GLFWwindowPtr, KeyCallback);
+
+	mainCam = new Camera(*GLFWwindowPtr);
+	currentMouseClick = false;
 	return true;
 }
 bool Engine::bufferModel()
@@ -46,6 +51,70 @@ bool Engine::gameLoop()
 
 	while (!glfwWindowShouldClose(GLFWwindowPtr))
 	{
+		bool left = false;
+		bool right = false;
+		bool foward = false;
+		bool backward = false;
+		bool up = false;
+		bool down = false;
+		bool sprint = false;
+		bool resetCam = false;
+		
+		if (keyIsDown[GLFW_KEY_LEFT] || keyIsDown[GLFW_KEY_A])
+		{
+			left = true;
+		}
+		if (keyIsDown[GLFW_KEY_RIGHT] || keyIsDown[GLFW_KEY_D])
+		{
+			right = true;
+		}
+		if (keyIsDown[GLFW_KEY_UP] || keyIsDown[GLFW_KEY_W])
+		{
+			foward = true;
+		}
+		if (keyIsDown[GLFW_KEY_DOWN] || keyIsDown[GLFW_KEY_S])
+		{
+			backward = true;
+		}
+		if (keyIsDown[GLFW_KEY_SPACE])
+		{
+			up = true;
+		}
+		if (keyIsDown[GLFW_KEY_X])
+		{
+			down = true;
+		}
+		if (keyIsDown[GLFW_KEY_LEFT_SHIFT])
+		{
+			sprint = true;
+		}
+		if (keyIsDown[GLFW_KEY_ESCAPE])
+		{
+			glfwSetWindowShouldClose(GLFWwindowPtr, GL_TRUE);
+		}
+		if(keyIsDown[GLFW_KEY_LEFT_CONTROL] && keyIsDown[GLFW_KEY_C])
+		{
+			resetCam = true;
+		}
+		if (keyIsDown[GLFW_MOUSE_BUTTON_1])
+		{
+			printf("Mouse CLICKUUUUUU");
+			currentMouseClick = true;
+		}
+		if(currentMouseClick == true && previousMouseClick == false)
+		{
+			int width, height;
+			glfwGetWindowSize(GLFWwindowPtr, &width, &height);
+			glfwSetCursorPos(GLFWwindowPtr, width * 0.5f, height * 0.5f);
+		}
+
+		mainCam->SetProjection();
+		mainCam->SetView();
+		mainCam->UpdateCam(left, right, foward, backward, up, down, sprint, currentMouseClick, resetCam, time.dt);
+
+		glUniformMatrix4fv(5, 1, GL_FALSE, &mainCam->viewMatrix[0][0]);
+		glUniformMatrix4fv(6, 1, GL_FALSE, &mainCam->ProjectMatrix[0][0]);
+
 		Engine::Update();
 		myGame->Update(shaderM.GetProgram());
 
@@ -54,14 +123,8 @@ bool Engine::gameLoop()
 
 		// Checking Input
 		keyWasDown = keyIsDown;
-		if (keyIsDown[GLFW_KEY_ESCAPE])
-		{
-			glfwSetWindowShouldClose(GLFWwindowPtr, GL_TRUE);
-		}
-		if(keyIsDown[GLFW_MOUSE_BUTTON_1])
-		{
-			printf("Mouse CLICKUUUUUU");
-		}
+		previousMouseClick = currentMouseClick;
+		currentMouseClick = false;
 		glfwPollEvents();
 	}
 
