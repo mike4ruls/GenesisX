@@ -13,4 +13,5 @@ void main()
 	newcolor = newcolor/3;
 
 	color = newcolor;
+	//color = vec4(1,0,0,1);
 }

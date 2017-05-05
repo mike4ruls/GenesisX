@@ -11,6 +11,7 @@ public:
 	Camera(GLFWwindow &window, InputManager &ip);
 	~Camera();
 
+	//camera variables
 	glm::vec3 camPos;
 	glm::vec3 camRot;
 	glm::vec3 camCenter;
@@ -19,10 +20,12 @@ public:
 	glm::vec3 up;
 	glm::mat3 rotMat;
 
+	//camera matrixs
 	glm::mat4 worldPos;
 	glm::mat4 viewMatrix;
 	glm::mat4 ProjectMatrix;
 
+	//window|input variables
 	InputManager *input;
 	GLFWwindow* window;
 
@@ -31,8 +34,11 @@ public:
 
 	int width;
 	int height;
+
+	//camera's sprint speed
 	float sprintSpeed;
 
+	//camera methods
 	void SetView();
 	void SetProjection();
 	void ResetCamera();
@@ -40,6 +46,7 @@ public:
 
 
 private:
+	//don't think these do anything
 	float t0;
 	float t;
 	float dt;

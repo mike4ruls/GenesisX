@@ -66,9 +66,9 @@ void main()
 		float diffuse = clamp(dot(L,input.norm),0.0,lightIntensity*fade);
 		float specular = pow(max(dot(H, input.norm),0.0), 16);
 
-		float lightIntensity =  ambience + diffuse + specular;
+		float lightInten =  ambience + diffuse + specular;
 		 
-		vec4 lighting = lightCol * lightIntensity;
+		vec4 lighting = lightCol * lightInten;
 
 		color += vec4(color.rgb * lighting.rgb, color.a);
 	}

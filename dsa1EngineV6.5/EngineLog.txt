@@ -135,3 +135,14 @@ out pretty well
 	~The final texture
 -Almost used a stencil buffer, developed my own approach
 -Modified Shaders to handle different graphics cards and not break
+
+===Version 6.5=== 5/04/17
+-Restructed my engine so that information isn't all over the place
+-Added lists of lights to render in the Renderer class
+-Lights now push themselves to the light list in the Renderer class on their own
+-Added a move method to lights
+-Added functionality to render lights sphere radius at will
+-Added multiples lights to the scene for testing(it works :D)
+-Added a default wall model to test lighting
+-Moving lights in a circle like motion, testing the Move function (that also works :DD)
+-Cleaned up code and now ready to move foward

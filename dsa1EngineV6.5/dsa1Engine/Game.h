@@ -8,16 +8,17 @@ public:
 	Game(Renderer &r, InputManager &ip);
 	~Game();
 
+	//game methods
 	void CreateMeshes();
-	//bool CanRenderLights(GameEntity obj, Light light);
-	void Update(GLuint program);
-	void LightingPass(glm::vec3 camPos);
+	void Update();
+	void RenderLights();
+	void UnrenderLights();
 
 	InputManager *input;
 	Renderer* rend;
-	Light light1;
 
 	std::vector<GameEntity*> gameobj;
+	std::vector<Light*> lights;
 private:
 
 };

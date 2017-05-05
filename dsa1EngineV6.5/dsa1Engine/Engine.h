@@ -10,37 +10,27 @@ public:
 	Engine();
 	~Engine();
 
-	// What does static do?
+	//setup engine methods
 	bool Init();
 	bool bufferModel();
 	bool gameLoop();
 	bool useShader();
-	GLuint CreateGeometryBuffer();
-	void AmbientPass();
-	void StencilePass();
-	void LightingPass();
 
-
+	//engine variables
 	int width;
 	int height;
 	GLFWwindow* GLFWwindowPtr;
 	Camera* mainCam;
-	GLuint g_Buffer;
-	GLuint colText;
-	GLuint normText;
-	GLuint worldText;
-	GLuint finText;
-	GLuint stenText;
-	GLuint depthBuffer;
-	GLuint vaoQuad;
 	InputManager input;
+	ShaderManager* shaderM;
 
+	//static stuff
 	static void Start();
 	static void Stop();
 	static void Update(GLFWwindow* window, std::string title);
 
 	static Timer time;
-	ShaderManager* shaderM;
+
 private:
 	
 };

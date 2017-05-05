@@ -1,6 +1,8 @@
 #version 430
-
-layout (location = 0) in struct Vertex
+layout (location = 0) uniform mat4 modelWorld;
+layout (location = 1) uniform mat4 view;
+layout (location = 2) uniform mat4 proj;
+layout (location = 3) in struct Vertex
 {
 	vec3 position;
 	vec2 uv;
@@ -8,9 +10,6 @@ layout (location = 0) in struct Vertex
 	vec4 color;
 } Input;
 
-layout (location = 4) uniform mat4 modelWorld;
-layout (location = 5) uniform mat4 view;
-layout (location = 6) uniform mat4 proj;
 layout (location = 7) uniform float t;
 layout (location = 8) uniform vec3 camP;
 layout (location = 9) uniform vec3 lPos;

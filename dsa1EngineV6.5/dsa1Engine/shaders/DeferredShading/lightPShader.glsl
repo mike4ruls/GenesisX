@@ -66,7 +66,7 @@ void main()
 	vec3 fragPos = texture(worldPos_Text,uv).rgb;
 
 	//lighting calculations
-	vec3 LightDir = fragPos - vec3(0.0,5.0,0.0);
+	vec3 LightDir = fragPos - lightPos;
 	float dist = length(LightDir);
 	LightDir = normalize(LightDir);
 

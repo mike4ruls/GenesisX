@@ -4,11 +4,15 @@ Game::Game(Renderer &r, InputManager &ip)
 {
 	rend = &r;
 	input = &ip;
-	light1 = Light("Light1", 1.0f, glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), rend);
-	rend->RemoveFromRenderer(light1.sphere->rendID);
-	 
-	// adds blue ambient to light
-	//light1.ambient = {0.0f,0.0f,5.0f,1.0f};
+	lights.push_back(new Light("Light1", 1.0f, glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), rend));
+	lights.push_back(new Light("Light2", 1.0f, glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), rend));
+	lights.push_back(new Light("Light3", 1.0f, glm::vec3(10, 1, 0), glm::vec3(0, 0, 0), rend));
+	lights.push_back(new Light("Light4", 1.0f, glm::vec3(10, 5, 0), glm::vec3(0, 0, 0), rend));
+
+	UnrenderLights();
+
+	//rend->RemoveFromRenderer(light1->sphere.rendID);
+
 	CreateMeshes();
 }
 
@@ -60,7 +64,7 @@ void Game::CreateMeshes()
 	//gameobj.push_back(new GameEntity("pizza2", verts2, ind2, rend));
 	gameobj.push_back(new GameEntity("too much pizza", "models/plane.obj", rend));
 	gameobj.push_back(new GameEntity("more pizza","models/box.obj", rend));
-	//gameobj.push_back(new GameEntity("too much pizza", "models/teapot.obj", rend));
+	gameobj.push_back(new GameEntity("big ass wall", "models/plane.obj", rend));
 	//gameobj.push_back(new GameEntity("too much pizza", "models/raygun.obj", rend));
 	//gameobj.push_back(new GameEntity("lots pizza", "models/HaloSword.obj", rend));
 
@@ -80,8 +84,10 @@ void Game::CreateMeshes()
 	////gameobj[4]->objMesh.LoadTexture("models/textures/brick.jpg");
 	//gameobj[4]->objMesh.specular = { 4,4,4,4 };
 	gameobj[1]->Translate(0, 3.5f, 0);
-	//gameobj[4]->Rotate(0, 45, 0);
-	////gameobj[4]->Scale(0.1f);
+
+	gameobj[2]->Rotate(1.5, 0, 0);
+	gameobj[2]->Scale(2.0f);
+	gameobj[2]->Translate(4, 3, -4);
 	//gameobj[4]->parent = gameobj[3];
 
 	//gameobj[5]->objMesh.specular = { 11,11,11,11 };
@@ -90,19 +96,7 @@ void Game::CreateMeshes()
 	
 }
 
-//bool Game::CanRenderLights(GameEntity obj, Light light)
-//{
-//	glm::vec3 vecDist = light.lightPos - obj.transform.position;
-//	float dist = glm::length(vecDist);
-//
-//	if(dist < (light.lightRadius + obj.radius))
-//	{
-//		return true;
-//	}
-//	return false;
-//}
-
-void Game::Update(GLuint program)
+void Game::Update()
 {
 	float speed = 0.25f;
 	if (input->IsKeyDown(GLFW_KEY_LEFT))
@@ -131,11 +125,11 @@ void Game::Update(GLuint program)
 	}
 	if (input->IsKeyDown(GLFW_KEY_O))
 	{
-		light1.myLight.lightRadius -= 0.1f;
+		lights[0]->myLight.lightRadius -= 0.1f;
 	}
 	if (input->IsKeyDown(GLFW_KEY_P))
 	{
-		light1.myLight.lightRadius += 0.1f;
+		lights[0]->myLight.lightRadius += 0.1f;
 	}
 	if (input->IsKeyPressed(GLFW_KEY_TAB))
 	{
@@ -143,19 +137,35 @@ void Game::Update(GLuint program)
 	}
 	if (input->IsKeyDown(GLFW_KEY_0))
 	{
-		light1.myLight.color = { 1.0f,1.0f,1.0f,1.0f };
+		lights[0]->myLight.color = { 1.0f,1.0f,1.0f,1.0f };
+
+		lights[1]->myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+		lights[2]->myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+		lights[3]->myLight.color = { 0.0f,0.0f,1.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_1))
 	{
-		light1.myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+		lights[0]->myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+
+		lights[2]->myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+		lights[3]->myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+		lights[1]->myLight.color = { 0.0f,0.0f,1.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_2))
 	{
-		light1.myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+		lights[0]->myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+
+		lights[3]->myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+		lights[1]->myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+		lights[2]->myLight.color = { 0.0f,0.0f,1.0f,1.0f };
 	}
 	if (input->IsKeyDown(GLFW_KEY_3))
 	{
-		light1.myLight.color = { 0.0f,0.0f,1.0f,1.0f };
+		lights[0]->myLight.color = { 0.0f,0.0f,1.0f,1.0f };
+
+		lights[1]->myLight.color = { 1.0f,0.0f,0.0f,1.0f };
+		lights[2]->myLight.color = { 0.0f,1.0f,0.0f,1.0f };
+		lights[3]->myLight.color = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 
@@ -178,42 +188,29 @@ void Game::Update(GLuint program)
 		(gameobj)[i]->Update();
 		
 	}
+	for (unsigned int i = 0; i < lights.size(); i++)
+	{
+		(lights)[i]->Move(sin(Engine::time.t) / 10.0f, cos(Engine::time.t) / 10.0f,0);
+		//(lights)[i]->myLight.color += glm::vec4(sin(Engine::time.t * 3) / 20.0f, cos(Engine::time.t * 3) / 20.0f, sin(Engine::time.t * 3) / 20.0f,1.0);
+	}
+
 	//(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
 	//gameobj[0]->Scale(abs(sin(Engine::time.t))/5.0f);
 	//gameobj[0]->Rotate(1.0f*Engine::time.dt, 2.0f*Engine::time.dt, 0.0f);
 	//gameobj[1]->Rotate(0.0f, 2.0f*Engine::time.dt, 0.0f);
-	
-	
-
-	rend->Update(program);
 }
 
-void Game::LightingPass(glm::vec3 camPos)
+void Game::RenderLights()
 {
-	glUniformMatrix4fv(0, 1, GL_FALSE, &light1.sphere->worldPos[0][0]);
-	glUniform1f(9, light1.myLight.lightRadius);
-	glUniform1f(10, light1.myLight.linear);
-	glUniform1f(11, light1.myLight.quadratic);
-	glUniform3f(12, light1.myLight.lightPos.x, light1.myLight.lightPos.y, light1.myLight.lightPos.z);
-	glUniform3f(13, light1.myLight.color.x, light1.myLight.color.y, light1.myLight.color.z);
-
-	glBindVertexArray(light1.sphere->GetVertArr());
-	glDepthMask(GL_FALSE);
-	//glDisable(GL_CULL_FACE);
-	glDepthFunc(GL_ALWAYS);
-	glm::vec3 vecDist = light1.myLight.lightPos - camPos;
-	float dist = glm::length(vecDist);
-	printf("\n%f", dist);
-	if (dist <= light1.myLight.lightRadius)
-	{
-		//glPolygonMode(GL_FRONT, GL_FILL);
-		glCullFace(GL_FRONT);
+	for (unsigned int i = 0; i < lights.size(); i++) {
+		rend->AddToRenderer(*lights[i]->sphere);
 	}
-	glDrawArrays(GL_TRIANGLES,0, light1.sphere->GetCount());
-	glBindVertexArray(0);
-	glDepthMask(GL_TRUE);
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	glCullFace(GL_BACK);
-	//glEnable(GL_DEPTH_TEST);
 }
+
+void Game::UnrenderLights()
+{
+	for (unsigned int i = 0; i < lights.size(); i++) {
+		rend->RemoveFromRenderer(lights[i]->sphere->rendID);
+	}
+}
+
