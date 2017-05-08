@@ -61,6 +61,7 @@ public:
 	std::vector<MiniMesh> myMeshes;
 	std::map<std::string, MatLib> matLibs;
 
+	glm::vec4 color;
 	glm::vec4 specular;
 
 	unsigned int count;

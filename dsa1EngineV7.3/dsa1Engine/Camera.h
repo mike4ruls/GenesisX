@@ -17,7 +17,9 @@ public:
 	glm::vec3 camCenter;
 	glm::vec3 camDir;
 	glm::vec3 camVel;
+	glm::vec3 foward;
 	glm::vec3 up;
+	glm::vec3 right;
 	glm::mat3 rotMat;
 
 	//camera matrixs

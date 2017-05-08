@@ -28,6 +28,7 @@ public:
 	static void Start();
 	static void Stop();
 	static void Update(GLFWwindow* window, std::string title);
+	static float Random();
 
 	static Timer time;
 

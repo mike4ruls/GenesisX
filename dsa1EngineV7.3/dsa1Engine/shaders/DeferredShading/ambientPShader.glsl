@@ -10,7 +10,7 @@ void main()
 	vec4 newcolor;
 
 	newcolor = texture(color_Text, TextCoord);
-	//newcolor = newcolor/3;
+	newcolor = newcolor/10;
 
 	color = newcolor;
 	//color = vec4(1,0,0,1);

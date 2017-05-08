@@ -103,7 +103,7 @@ bool Engine::useShader()
 }
 void Engine::Start()
 {
-	
+	std::srand(std::time(0));
 }
 
 void Engine::Stop()
@@ -114,6 +114,10 @@ void Engine::Stop()
 void Engine::Update(GLFWwindow* window, std::string title)
 {
 	time.Update();
+}
+float Engine::Random()
+{
+	return rand();
 }
 Timer Engine::time;
 

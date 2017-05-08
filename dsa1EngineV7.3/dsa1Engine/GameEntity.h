@@ -74,9 +74,9 @@ public:
 	}ridgidBody;
 	struct Collision
 	{
-		float farthestX;
-		float farthestY;
-		float farthestZ;
+		glm::vec3 originalBoundingBox;
+		glm::vec3 boundingBox;
+		glm::vec3 center;
 		float radius;
 	}collider;
 

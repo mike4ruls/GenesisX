@@ -6,7 +6,6 @@ layout (location = 2) uniform mat4 viewMat;
 layout (location = 3) in vec3 pos;
 layout (location = 4) in vec2 uv;
 layout (location = 5) in vec3 nor;
-layout (location = 6) in vec2 color;
 
 
 void main()

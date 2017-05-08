@@ -60,7 +60,7 @@ void GameEntity::Update()
 	{
 		ApplyGravity();
 	}
-	CalculateFric();
+	//CalculateFric();
 	UpdateVelocity();
 	if(transform.forward != PREV_FORWARD)
 	{
@@ -87,7 +87,7 @@ void GameEntity::ResetGameEntity()
 	worldPos = glm::mat4(1.0f);
 	applyGrav = false;
 	maxSpeed = 0.3f;
-	fricStrength = 0.2f;
+	fricStrength = 0.1f;
 	gravity = {0,-1.0f,0};
 
 	transform.position = {0.0f,0.0f,0.0f};
@@ -123,49 +123,44 @@ std::string GameEntity::GetTag()
 }
 void GameEntity::FindRadius()
 {
-	float largestRad = 0;
+	float largestX = 0;
+	float largestY = 0;
+	float largestZ = 0;
 	for(unsigned int i = 0; i< objMesh.verts.size();i++)
 	{
-		glm::vec3 pos = objMesh.verts[i].pos * transform.scale;
+		glm::vec3 pos = objMesh.verts[i].pos;
 		float x = glm::abs(pos.x);
 		float y = glm::abs(pos.y);
 		float z = glm::abs(pos.z);
-		if( x > y && x > z)
+		if(x > largestX)
 		{
-			if(x > largestRad)
-			{
-				largestRad = x;
-			}
+			largestX = x;
 		}
-		else if (y > x && y > z)
+		if (y > largestY)
 		{
-			if (y > largestRad)
-			{
-				largestRad = y;
-			}
+			largestY = y;
 		}
-		else if (z > y && z > x)
+		if (z > largestZ)
 		{
-			if (z > largestRad)
-			{
-				largestRad = z;
-			}
-		}
-		else if(x == y || x == z)
-		{
-			if (x > largestRad)
-			{
-				largestRad = x;
-			}
-		}
-		else if (y == z)
-		{
-			if (y > largestRad)
-			{
-				largestRad = y;
-			}
+			largestZ = z;
 		}
 	}
+	if(largestX == 0)
+	{
+		largestX = 0.5f;
+	}
+	if (largestY == 0)
+	{
+		largestY = 0.5f;
+	}
+	if (largestZ == 0)
+	{
+		largestZ = 0.5f;
+	}
+
+	collider.originalBoundingBox = glm::vec3(largestX,largestY,largestZ);
+	collider.boundingBox = collider.originalBoundingBox * transform.scale;
+	collider.radius = glm::distance(glm::vec3( 0,0,0 ),collider.boundingBox);
 }
 
 #pragma region Tranform Methods
@@ -194,7 +189,8 @@ void GameEntity::Scale(glm::vec3 scaleVec)
 	transform.scale.y = scaleVec.y;
 	transform.scale.z = scaleVec.z;
 
-	FindRadius();
+	collider.boundingBox = collider.originalBoundingBox * transform.scale;
+	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 
@@ -204,7 +200,8 @@ void GameEntity::Scale(float x, float y, float z)
 	transform.scale.y = y;
 	transform.scale.z = z;
 
-	FindRadius();
+	collider.boundingBox = collider.originalBoundingBox * transform.scale;
+	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 
@@ -214,7 +211,8 @@ void GameEntity::Scale(float c)
 	transform.scale.y = c;
 	transform.scale.z = c;
 
-	FindRadius();
+	collider.boundingBox = collider.originalBoundingBox * transform.scale;
+	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 

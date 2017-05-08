@@ -1,15 +1,15 @@
 #version 430
-layout (location = 0) uniform mat4 modelWorld;
-layout (location = 1) uniform mat4 view;
-layout (location = 2) uniform mat4 proj;
-layout (location = 3) in struct Vertex
+
+layout (location = 0) in struct Vertex
 {
 	vec3 position;
 	vec2 uv;
 	vec3 normal;
-	vec4 color;
 } Input;
-
+layout (location = 3) uniform vec4 myColor;
+layout (location = 4) in mat4 modelWorld;
+layout (location = 5) uniform mat4 view;
+layout (location = 6) uniform mat4 proj;
 layout (location = 7) uniform float t;
 layout (location = 8) uniform vec3 camP;
 layout (location = 9) uniform vec3 lPos;
@@ -37,13 +37,10 @@ void main()
 		input.fragPos = worldViewProj * vec4(Input.position, 1);
 		input.camPos = vec4(camP, 1);
 		input.lightPos = vec4(lPos, 1);
-		//input.norm = norm;
-		//input.norm = worldViewProj*norm;
-		//input.norm = inverse(worldViewProj)*norm;
 		input.norm = transpose(inverse(modelWorld))*norm;
 		input.norm = normalize(input.norm);
 		input.uv = Input.uv;
-		input.color = Input.color;
+		input.color = myColor;
 		input.time = t;
 
 		gl_Position = worldViewProj*vec4(Input.position, 1);	

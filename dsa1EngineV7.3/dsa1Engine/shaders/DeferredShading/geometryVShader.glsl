@@ -5,9 +5,8 @@ layout (location = 3) in struct Vertex
 	vec3 position;
 	vec2 uv;
 	vec3 normal;
-	vec4 color;
 } Input;
-
+layout (location = 6) uniform vec4 myColor;
 layout (location = 7) uniform mat4 modelWorld;
 layout (location = 8) uniform mat4 view;
 layout (location = 9) uniform mat4 proj;
@@ -35,7 +34,7 @@ void main()
 		input.norm = modelWorld*norm;
 		input.norm = normalize(input.norm);
 		input.uv = Input.uv;
-		input.color = Input.color;
+		input.color = myColor;
 		input.time = t;
 
 		gl_Position = worldViewProj*vec4(Input.position, 1);	

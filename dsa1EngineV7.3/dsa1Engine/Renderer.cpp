@@ -8,11 +8,16 @@ Renderer::Renderer(Camera *c, ShaderManager& man, int *w, int *h)
 	shaderM = &man;
 	wid = w;
 	hei = h;
+
+	lights.reserve(20);
+	gameObjs.reserve(20);
+
 	//glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	currentSky = 0;
 
 	SkyBoxModel = GameEntity("skybox", "models/box.obj", Mesh::SingleMesh,this);
+	SkyBoxModel.SetTag("SkyBox");
 	RemoveFromRenderer(SkyBoxModel.rendID);
 	LoadAllSkyBoxes();
 
@@ -59,9 +64,9 @@ void Renderer::Update()
 			ResetAmbient();
 
 			//Lighting Pass
-			//SetUpLighting();
-			//LightingPass();
-			//ResetLighting();
+			SetUpLighting();
+			LightingPass();
+			ResetLighting();
 
 			//copying info from g_Buffer to default buffer
 			BlitInfo();
@@ -405,6 +410,7 @@ void Renderer::GeometryPass(GameEntity &obj)
 
 		for(unsigned int i = 0; i < obj.objMesh.myMeshes.size(); i++)
 		{
+			glUniform4f(6, (&obj)->objMesh.color.x, (&obj)->objMesh.color.y, (&obj)->objMesh.color.z, (&obj)->objMesh.color.w);
 			glUniform1i(11, (&obj)->objMesh.myMeshes[i].hasTex);
 			if ((&obj)->objMesh.myMeshes[i].hasTex)
 			{
@@ -420,6 +426,7 @@ void Renderer::GeometryPass(GameEntity &obj)
 		//glDepthFunc(GL_LESS);
 	}
 	else {
+		glUniform4f(6, (&obj)->objMesh.color.x, (&obj)->objMesh.color.y, (&obj)->objMesh.color.z, (&obj)->objMesh.color.w);
 		glUniform1i(11, (&obj)->objMesh.hasTex);
 		//glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
 		if ((&obj)->objMesh.hasTex)

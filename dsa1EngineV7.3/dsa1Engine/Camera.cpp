@@ -19,10 +19,11 @@ Camera::Camera(GLFWwindow &w, InputManager &ip)
 	t = 0;
 	dt = 0;
 
-	sprintSpeed = 20.0f;
+	sprintSpeed = 25.0f;
 
 	camPos = {0,4,15};
 	camRot = {0,0,0};
+	foward = {0,0,-1};
 
 	glfwGetWindowSize(window, &width, &height);
 	glfwSetCursorPos(window, width / 2, height / 2);
@@ -42,7 +43,11 @@ void Camera::SetView()
 {
 	rotMat = (glm::mat3)glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
 	camCenter = camPos + (rotMat * glm::vec3(0, 0, -1));
+	right = rotMat * glm::vec3(1, 0, 0);
 	up = rotMat * glm::vec3(0, 1, 0);
+	//foward = rotMat * glm::vec3(0, 0, -1);
+	foward = glm::cross(up, right);
+	//foward = glm::cross(up, glm::vec3(1, 0, 0));
 
 	glm::mat4 myTrans = glm::translate(camPos);
 	glm::mat4 myRot = glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
@@ -50,6 +55,9 @@ void Camera::SetView()
 	worldPos = myTrans * myRot;
 
 	viewMatrix = glm::lookAt(camPos, camCenter, up);
+	//foward = glm::normalize(glm::vec3(viewMatrix * glm::vec4(0,0,1,0)));
+	//foward = glm::vec3(foward.x, foward.y, foward.z*-1);
+	//printf("x: %.3f, y: %.3f, z: %.3f\n", foward.x, foward.y, foward.z);
 }
 
 void Camera::SetProjection()
@@ -130,7 +138,7 @@ void Camera::UpdateCam(float dt)
 
 
 
-	float speed = 1.0f;
+	float speed = 20.0f;
 	if(camVel != glm::vec3())
 	{
 		if (input->IsKeyDown(GLFW_KEY_LEFT_SHIFT))

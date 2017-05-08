@@ -42,6 +42,7 @@ Mesh::Mesh(std::vector<Vertex> &v)
 		sizeof(glm::vec3), // stride
 		0); // the offset 
 	glBindVertexArray(0);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 Mesh::Mesh(std::string filename, MeshType m)
@@ -84,8 +85,6 @@ Mesh::Mesh(std::string filename, MeshType m)
 							newVert.uv = uv[in[i].uvInd - 1];
 							newVert.normal = { 0,1,0 };
 
-							newVert.color = { 0.5f,0.5f,0.5f,1.0f };
-
 							vertBufData.push_back(newVert);
 						}
 						// generating buffer and storing their addresses to out init variables
@@ -106,7 +105,6 @@ Mesh::Mesh(std::string filename, MeshType m)
 						glEnableVertexAttribArray(3);
 						glEnableVertexAttribArray(4);
 						glEnableVertexAttribArray(5);
-						glEnableVertexAttribArray(6);
 						glVertexAttribPointer(3, // the index
 							3, // number of components to expect(x,y,z)
 							GL_FLOAT, // Type of data
@@ -127,13 +125,6 @@ Mesh::Mesh(std::string filename, MeshType m)
 							GL_FALSE,
 							sizeof(Vertex),
 							reinterpret_cast<void *>(offsetof(Vertex, normal)));
-
-						glVertexAttribPointer(6,
-							4,// number of components to expect(r,g,b,a)
-							GL_FLOAT,
-							GL_FALSE,
-							sizeof(Vertex),
-							reinterpret_cast<void *>(offsetof(Vertex, color)));
 						glBindVertexArray(0);
 
 						FREE_IMAGE_FORMAT type = FreeImage_GetFileType(&matLibs.at(matName).kdFileName[0], 0);
@@ -362,10 +353,7 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 			}
 			else {
 				newVert.normal = { 0,1,0 };
-			}		
-
-			newVert.color = { 0.5f,0.5f,0.5f,1.0f };
-			
+			}					
 			vertBufData.push_back(newVert);
 			/*if ((i + 1) % 3 == 0) {
 				glm::vec3 totNorm = { 0,0,0 };
@@ -396,7 +384,6 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
 	glEnableVertexAttribArray(5);
-	glEnableVertexAttribArray(6);
 	glVertexAttribPointer(3, // the index
 		3, // number of components to expect(x,y,z)
 		GL_FLOAT, // Type of data
@@ -417,14 +404,8 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 		GL_FALSE,
 		sizeof(Vertex),
 		reinterpret_cast<void *>(offsetof(Vertex, normal)));
-
-	glVertexAttribPointer(6,
-		4,// number of components to expect(r,g,b,a)
-		GL_FLOAT,
-		GL_FALSE,
-		sizeof(Vertex),
-		reinterpret_cast<void *>(offsetof(Vertex, color)));
 	glBindVertexArray(0);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f,2.0f,2.0f,2.0f);
 }
 
@@ -456,7 +437,6 @@ void Mesh::CreateBuffer()
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
 	glEnableVertexAttribArray(5);
-	glEnableVertexAttribArray(6);
 	glVertexAttribPointer(3, // the index
 		3, // number of components to expect(x,y,z)
 		GL_FLOAT, // Type of data
@@ -477,13 +457,7 @@ void Mesh::CreateBuffer()
 			GL_FALSE, 
 			sizeof(Vertex), 
 			reinterpret_cast<void *>(offsetof(Vertex, normal)));
-
-		glVertexAttribPointer(6,
-			4,// number of components to expect(r,g,b,a)
-			GL_FLOAT,
-			GL_FALSE,
-			sizeof(Vertex),
-			reinterpret_cast<void *>(offsetof(Vertex, color)));
 	glBindVertexArray(0);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
 }
