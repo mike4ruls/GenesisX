@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Light.h"
 #include "Bullet.h"
+#include <map>
 class Game
 {
 public:
@@ -15,6 +16,11 @@ public:
 	void Update();
 	void RenderLights();
 	void UnrenderLights();
+	void DeleteBullet(unsigned int i);
+	void DestroyBullet(unsigned int i);
+	void StickBullet(unsigned int i);
+	void BulletLightsOn();
+	void BulletLightsOff();
 	bool SphereCollision(GameEntity *obj1, GameEntity *obj2);
 	bool BoxCollision(GameEntity *obj1, GameEntity *obj2);
 	bool SphereBoxCollision(GameEntity *obj1, GameEntity *obj2);
@@ -24,10 +30,10 @@ public:
 	InputManager *input;
 	Renderer* rend;
 
-	Mesh bulletMesh;
-
 	bool currentMouseClick;
 	bool previousMouseClick;
+
+	std::map <std::string, Mesh> MeshDictionary;
 
 	std::vector<GameEntity*> gameobj;
 	std::vector<Bullet*> bullets;

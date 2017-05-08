@@ -38,11 +38,11 @@ GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsig
 	ResetGameEntity();
 }
 
-GameEntity::GameEntity(std::string nm, std::string filename, Mesh::MeshType t,void * r)
+GameEntity::GameEntity(std::string nm, std::string filename, Mesh::MeshType t, std::string file,void * r)
 {
 	name = nm;
 	tag = "GameObject";
-	objMesh = Mesh(filename, t);
+	objMesh = Mesh(filename, t, file);
 	rend = r;
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	ResetGameEntity();

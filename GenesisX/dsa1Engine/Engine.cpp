@@ -119,5 +119,15 @@ float Engine::Random()
 {
 	return rand();
 }
+bool Engine::LoadMesh(std::string meshName, std::string fileName, Mesh::MeshType mT, std::string filePath)
+{
+	MeshDictionary.insert(std::pair<std::string, Mesh>(meshName, Mesh(fileName, mT, filePath)));
+	return true;
+}
+Mesh Engine::GetMesh(std::string name)
+{
+	return MeshDictionary.at(name);
+}
 Timer Engine::time;
+std::map <std::string, Mesh> Engine::MeshDictionary;
 

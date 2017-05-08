@@ -17,14 +17,13 @@ Bullet::Bullet(float s, std::string file, void* r)
 	bulletTime = 0.0f;
 	bulletLifeSpan = 3.0f;
 
-	bulletModel = new GameEntity("my bullet",file,Mesh::SingleMesh, r);
+	bulletModel = new GameEntity("my bullet",file,Mesh::SingleMesh, "",r);
 	bulletLight = new Light("my bullet light", 1.0, camPos, glm::vec3(0, 0, 0), r);
 	((Renderer*)r)->RemoveFromRenderer(bulletLight->sphere->rendID);
 	bulletLight->myLight.color = color;
 
 	bulletModel->SetTag("Bullet");
 	bulletModel->Translate(camPos);
-	//bulletModel->ridgidBody.mass = 0.5f;
 	bulletModel->objMesh.color = color;
 	//bulletModel->applyGrav = true;
 	bulletModel->ApplyForce(foward * (glm::vec3(1)*speed));

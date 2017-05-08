@@ -14,9 +14,9 @@ Renderer::Renderer(Camera *c, ShaderManager& man, int *w, int *h)
 
 	//glClearColor(0.392f, 0.584f, 0.929f, 1.0f);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	currentSky = 0;
+	currentSky = 1;
 
-	SkyBoxModel = GameEntity("skybox", "models/box.obj", Mesh::SingleMesh,this);
+	SkyBoxModel = GameEntity("skybox", "models/box.obj", Mesh::SingleMesh,"",this);
 	SkyBoxModel.SetTag("SkyBox");
 	RemoveFromRenderer(SkyBoxModel.rendID);
 	LoadAllSkyBoxes();

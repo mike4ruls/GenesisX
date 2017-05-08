@@ -37,7 +37,7 @@ public:
 	Mesh();
 	Mesh(std::vector<Vertex> &v);
 	Mesh(std::vector<Vertex> &v, std::vector<unsigned int> &i);
-	Mesh(std::string filename, MeshType m);
+	Mesh(std::string filename, MeshType m, std::string file);
 	~Mesh();
 
 	void LoadTexture(char* filename);
@@ -51,8 +51,7 @@ public:
 	GLuint vertArr;
 	GLuint vertBuf;
 
-	std::string kindomHeartsLevel = "models/DestinyIsland/level/";
-	//std::string kindomHeartsLevel = "models/TraverseTown/level/";
+	std::string kindomHeartsLevel;
 
 	std::vector<Vertex> verts;
 	std::vector<unsigned int> ind;

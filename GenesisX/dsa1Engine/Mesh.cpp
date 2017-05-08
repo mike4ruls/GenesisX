@@ -45,12 +45,13 @@ Mesh::Mesh(std::vector<Vertex> &v)
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
-Mesh::Mesh(std::string filename, MeshType m)
+Mesh::Mesh(std::string filename, MeshType m, std::string file)
 {
 	using namespace std;
 	ifstream inFile;
 	string info;
 	meshType = m;
+	kindomHeartsLevel = file;
 
 	vector<glm::vec3> pos;
 	vector<glm::vec2> uv;

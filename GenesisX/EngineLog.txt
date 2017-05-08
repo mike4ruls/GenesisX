@@ -168,10 +168,25 @@ out pretty well
 -Changed vertex information, moved the color of the mesh from the vertex to the mesh class
 
 ==Bugs==
--If I try and remove the lights on the bullets from the renderer it screams at me
--If I try to remove the object of the bullet from the render it screams at me
--Ending the game throws a error apperently(need to look into this) UPDATE(Apperently deleting the bullets I pushed to the game object vector is causing it)
+-If I try and remove the lights on the bullets from the renderer it screams at me (fixed)
+-If I try to remove the object of the bullet from the render it screams at me (fixed)
+-Ending the game throws a error apperently(need to look into this) UPDATE(Apperently deleting the bullets I pushed to the game object vector is causing it) (fixed)
 -Collison detection is still kind of wonky
 -Not sure if sphere on box collision is working correctly
 -FPS drops frames for a slight second everytime you shoot a bullet
+-Also I cannot tell if i'm leaking memory or not >:/
+
+===Version 7.8=== 5/08/17
+-Fixed removing lights screaming at me
+-Fixed removing bullet objects screaming at me
+-Fixed ending the game screaming at me
+-Fixed FPS dropping for a slight second everytime you shoot
+-Added storing all my Meshes in a dictionary that is a static object in my engine
+-Now can call upon preloaded Meshes to create game objects anywhere in my code
+-Bullets can now either delete themselves when they collide with something or stick and in place
+-Finally done with DSA1 course lol
+
+==Bugs==
+-Collison detection is still kind of wonky
+-Not sure if sphere on box collision is working correctly
 -Also I cannot tell if i'm leaking memory or not >:/

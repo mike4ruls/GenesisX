@@ -9,7 +9,7 @@ Light::Light()
 Light::Light(char* name, float inten,glm::vec3 lightP, glm::vec3 lightD, void* r )
 {
 	//creating a sphere object
-	sphere = new GameEntity(name,"models/sphere.obj", Mesh::SingleMesh,r);
+	sphere = new GameEntity(name,Engine::GetMesh("Sphere"),r);
 	//setting tag to Light
 	sphere->SetTag("Light");
 
