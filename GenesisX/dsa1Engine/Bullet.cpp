@@ -7,7 +7,7 @@ Bullet::Bullet()
 {
 }
 
-Bullet::Bullet(float s, std::string file, void* r)
+Bullet::Bullet(float s, std::string file, Renderer* r)
 {
 	speed = s;
 	glm::vec3 camPos = ((Renderer*)r)->cam->camCenter;
@@ -19,16 +19,16 @@ Bullet::Bullet(float s, std::string file, void* r)
 
 	bulletModel = new GameEntity("my bullet",file,Mesh::SingleMesh, "",r);
 	bulletLight = new Light("my bullet light", 1.0, camPos, glm::vec3(0, 0, 0), r);
-	((Renderer*)r)->RemoveFromRenderer(bulletLight->sphere->rendID);
+	r->RemoveFromRenderer(bulletLight->sphere->rendID);
 	bulletLight->myLight.color = color;
 
 	bulletModel->SetTag("Bullet");
 	bulletModel->Translate(camPos);
-	bulletModel->objMesh.color = color;
-	//bulletModel->applyGrav = true;
+	bulletModel->color = color;
+	bulletModel->applyGrav = true;
 	bulletModel->ApplyForce(foward * (glm::vec3(1)*speed));
 }
-Bullet::Bullet(float s, Mesh* myMesh, void* r)
+Bullet::Bullet(float s, Mesh &myMesh, Renderer* r)
 {
 	speed = s;
 	glm::vec3 camPos = ((Renderer*)r)->cam->camCenter;
@@ -38,15 +38,15 @@ Bullet::Bullet(float s, Mesh* myMesh, void* r)
 	bulletTime = 0.0f;
 	bulletLifeSpan = 3.0f;
 
-	bulletModel = new GameEntity("my bullet", *myMesh, r);
+	bulletModel = new GameEntity("my bullet", myMesh, r);
 	bulletLight = new Light("my bullet light", 1.0, camPos, glm::vec3(0, 0, 0), r);
-	((Renderer*)r)->RemoveFromRenderer(bulletLight->sphere->rendID);
+	r->RemoveFromRenderer(bulletLight->sphere->rendID);
 	bulletLight->myLight.color = color;
 
 	bulletModel->SetTag("Bullet");
 	bulletModel->Translate(camPos + foward);
 	//bulletModel->ridgidBody.mass = 0.5f;
-	bulletModel->objMesh.color = color;
+	bulletModel->color = color;
 	//bulletModel->applyGrav = true;
 	bulletModel->ApplyForce(foward * (glm::vec3(1)*speed));
 }
@@ -54,16 +54,19 @@ Bullet::Bullet(float s, Mesh* myMesh, void* r)
 
 Bullet::~Bullet()
 {
-	if (bulletModel != nullptr) { delete bulletModel;  bulletModel = nullptr; }
-	if (bulletLight != nullptr) { delete bulletLight;  bulletLight = nullptr; }
+	//if (bulletModel != nullptr) { delete bulletModel;  bulletModel = nullptr; }
+	//if (bulletLight != nullptr) { delete bulletLight;  bulletLight = nullptr; }
 }
 
 void Bullet::Update()
 {
 	bulletModel->Update();
 
-	printf("x: %.3f, y: %.3f, z: %.3f\n", bulletModel->ridgidBody.velocity.x, bulletModel->ridgidBody.velocity.y, bulletModel->ridgidBody.velocity.z);
+	//printf("x: %.3f, y: %.3f, z: %.3f\n", bulletModel->ridgidBody.velocity.x, bulletModel->ridgidBody.velocity.y, bulletModel->ridgidBody.velocity.z);
 
+	//bulletLight->myLight.lightPos = bulletModel->transform.position;
+	//bulletLight->sphere->transform.position = bulletModel->transform.position;
+	//bulletLight->sphere->SetWorldPos();
 	bulletLight->Move(bulletModel->ridgidBody.velocity);
 
 	bulletTime += Engine::time.dt;

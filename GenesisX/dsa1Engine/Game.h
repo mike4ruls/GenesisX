@@ -1,6 +1,8 @@
 #pragma once
 #include "InputManager.h"
 #include "Renderer.h"
+#include"GameEntity.h"
+#include "Player.h"
 #include "Light.h"
 #include "Bullet.h"
 #include <map>
@@ -25,13 +27,18 @@ public:
 	bool BoxCollision(GameEntity *obj1, GameEntity *obj2);
 	bool SphereBoxCollision(GameEntity *obj1, GameEntity *obj2);
 
+	void CreatePlayer();
+
 	void Shoot();
 
 	InputManager *input;
 	Renderer* rend;
+	Player* player;
 
 	bool currentMouseClick;
 	bool previousMouseClick;
+
+	glm::vec3 rayGunOffset;
 
 	std::map <std::string, Mesh> MeshDictionary;
 

@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+#include "Player.h"
 
 
 Camera::Camera()
@@ -80,6 +80,83 @@ void Camera::ResetCamera()
 	SetProjection();
 }
 
+void Camera::UpdatePlayerCam(float dt)
+{
+	if (input->IsMouseClick(GLFW_MOUSE_BUTTON_1))
+	{
+		//printf("Mouse CLICKUUUUUU");
+		currentMouseClick = true;
+	}
+	if (currentMouseClick == true && previousMouseClick == false)
+	{
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		glfwSetCursorPos(window, width * 0.5f, height * 0.5f);
+	}
+
+	if (currentMouseClick)
+	{
+		float sens = 0.005f;
+		double x, y;
+		glfwGetCursorPos(window, &x, &y);
+		camRot.y -= sens * ((float)x - width * 0.5f);
+		camRot.x -= sens * ((float)y - height * 0.5f);
+		camRot.x -= glm::clamp(camRot.z, -0.5f*3.145f, 0.5f*3.145f);
+		glfwSetCursorPos(window, width * 0.5f, height * 0.5f);
+	}
+	if (input->IsKeyDown(GLFW_KEY_LEFT_CONTROL) && input->IsKeyDown(GLFW_KEY_C))
+	{
+		ResetCamera();
+	}
+
+	camVel = {};
+	glm::mat3 R = (glm::mat3)glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
+	if (input->IsKeyDown(GLFW_KEY_A))
+	{
+		player->myPlayer->ApplyForce(-player->myPlayer->transform.right * glm::vec3(1.0f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_D))
+	{
+		player->myPlayer->ApplyForce(player->myPlayer->transform.right * glm::vec3(1.0f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_W))
+	{
+		player->myPlayer->ApplyForce(player->myPlayer->transform.forward * glm::vec3(1.0f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_S))
+	{
+		player->myPlayer->ApplyForce(-player->myPlayer->transform.forward * glm::vec3(1.0f));
+	}
+	if (input->IsKeyDown(GLFW_KEY_SPACE))
+	{
+		player->grounded = false;
+		player->myPlayer->ApplyForce(glm::vec3(0.0f, 10.0f, 0.0f));
+	}
+
+
+
+	/*float speed = 20.0f;
+	if (camVel != glm::vec3())
+	{
+		if (input->IsKeyDown(GLFW_KEY_LEFT_SHIFT))
+		{
+			camVel = glm::normalize(camVel) * sprintSpeed;
+		}
+		else
+		{
+			camVel = glm::normalize(camVel) * speed;
+		}
+	}*/
+
+	camPos = player->myPlayer->transform.position;
+	previousMouseClick = currentMouseClick;
+	currentMouseClick = false;
+	player->myPlayer->transform.forward = glm::vec3(foward.x, 0, foward.z );
+	player->myPlayer->transform.right = glm::vec3(right.x, 0, right.z);
+	player->myPlayer->Update();
+	player->PlayerUpdate();
+}
+
 void Camera::UpdateCam(float dt)
 {
 	if (input->IsMouseClick(GLFW_MOUSE_BUTTON_1))
@@ -154,5 +231,10 @@ void Camera::UpdateCam(float dt)
 	camPos += camVel * dt;
 	previousMouseClick = currentMouseClick;
 	currentMouseClick = false;
+}
+
+void Camera::SetPlayer(Player &p)
+{
+	player = &p;
 }
 

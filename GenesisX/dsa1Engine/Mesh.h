@@ -40,13 +40,8 @@ public:
 	Mesh(std::string filename, MeshType m, std::string file);
 	~Mesh();
 
-	void LoadTexture(char* filename);
-	GLuint GetTexId();
 	void CreateBuffer();
 	void CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm::vec2> uv, std::vector<glm::vec3> nor);
-
-	bool hasTex = false;
-	unsigned int texID = 0;
 
 	GLuint vertArr;
 	GLuint vertBuf;
@@ -59,9 +54,6 @@ public:
 
 	std::vector<MiniMesh> myMeshes;
 	std::map<std::string, MatLib> matLibs;
-
-	glm::vec4 color;
-	glm::vec4 specular;
 
 	unsigned int count;
 private:

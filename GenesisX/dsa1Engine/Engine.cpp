@@ -10,6 +10,11 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+	if (mainCam != nullptr) { delete mainCam; mainCam = nullptr; }
+	//if (input != nullptr) { delete bulletModel;  bulletModel = nullptr; }
+	if (shaderM != nullptr) { delete shaderM;  shaderM = nullptr; }
+	if (newRend!= nullptr) { delete newRend;  newRend = nullptr; }
+	if (myGame != nullptr) { delete myGame;  myGame = nullptr; }
 }
 bool Engine::Init()
 {
@@ -26,18 +31,32 @@ bool Engine::Init()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	//Engine::LoadMesh("DestinyIsland", "models/DestinyIsland/level/di00_01.obj", Mesh::MultipleMesh, "models/DestinyIsland/level/");
+	//Engine::LoadMesh("TraverseTown", "models/TraverseTown/level/tw00_01.obj", Mesh::MultipleMesh, "models/TraverseTown/level/");
+	Engine::LoadMesh("RayGun", "models/raygun.obj", Mesh::SingleMesh, "");
+	Engine::LoadMesh("HaloSword", "models/HaloSword.obj", Mesh::SingleMesh, "");
+	Engine::LoadMesh("Teapot", "models/teapot.obj", Mesh::SingleMesh, "");
+	Engine::LoadMesh("Sphere", "models/sphere.obj", Mesh::SingleMesh, "");
+	Engine::LoadMesh("Box", "models/box.obj", Mesh::SingleMesh, "");
+	Engine::LoadMesh("Plane", "models/plane.obj", Mesh::SingleMesh, "");
+
 	mainCam = new Camera(*GLFWwindowPtr, input);
+
 	return true;
 }
 bool Engine::bufferModel()
 {
+
 	return true;
 }
 bool Engine::gameLoop()
 {
 	glfwGetWindowSize(GLFWwindowPtr, &width, &height);
-	Renderer* newRend = new Renderer(mainCam, *shaderM, &width, &height);
-	Game* myGame = new Game(*newRend, input);
+	newRend = new Renderer(mainCam, *shaderM, &width, &height);
+	myGame = new Game(*newRend, input);
+	mainCam->SetPlayer(*myGame->player);
+	//myGame->SetPlayer();
 
 	while (!glfwWindowShouldClose(GLFWwindowPtr))
 	{
@@ -48,7 +67,8 @@ bool Engine::gameLoop()
 		//updating camera
 		mainCam->SetProjection();
 		mainCam->SetView();
-		mainCam->UpdateCam(time.dt);
+		//mainCam->UpdateCam(time.dt);
+		mainCam->UpdatePlayerCam(time.dt);
 
 		//updating models
 		myGame->Update();
@@ -66,9 +86,6 @@ bool Engine::gameLoop()
 		// Checking Input	
 		glfwPollEvents();
 	}
-
-	if (newRend != nullptr) { delete newRend; newRend = nullptr; }
-	if (myGame != nullptr) { delete myGame; myGame = nullptr; }
 	glfwTerminate();
 	return true;
 }
@@ -117,17 +134,18 @@ void Engine::Update(GLFWwindow* window, std::string title)
 }
 float Engine::Random()
 {
-	return rand();
+	return (float)rand();
 }
 bool Engine::LoadMesh(std::string meshName, std::string fileName, Mesh::MeshType mT, std::string filePath)
 {
-	MeshDictionary.insert(std::pair<std::string, Mesh>(meshName, Mesh(fileName, mT, filePath)));
+	MeshDictionary.insert(std::pair<std::string, std::shared_ptr<Mesh>>(meshName, std::make_shared<Mesh>(fileName, mT, filePath)));
 	return true;
 }
-Mesh Engine::GetMesh(std::string name)
+Mesh* Engine::GetMesh(std::string name)
 {
-	return MeshDictionary.at(name);
+	std::shared_ptr<Mesh> newMesh = MeshDictionary.at(name);
+	return newMesh.get();
 }
 Timer Engine::time;
-std::map <std::string, Mesh> Engine::MeshDictionary;
+std::map <std::string, std::shared_ptr<Mesh>> Engine::MeshDictionary;
 

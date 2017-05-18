@@ -72,6 +72,9 @@
     <ClCompile Include="Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -119,6 +122,18 @@
     <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RidgidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\DeferredShading\ambientPShader.glsl">
@@ -157,12 +172,13 @@
     <None Include="shaders\SkyBoxShading\skyBoxVShader.glsl">
       <Filter>Shaders\SkyBoxShading</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
     <None Include="shaders\DeferredShading\nullP.glsl">
       <Filter>Shaders\DeferredShading</Filter>
     </None>
     <None Include="shaders\DeferredShading\nullV.glsl">
       <Filter>Shaders\DeferredShading</Filter>
     </None>
+    <None Include="packages.config" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,12 @@
 #pragma once
 #include "GameEntity.h"
-class Light
+#include "Renderer.h"
+
+class alignas(16) Light
 {
 public:
 	Light();
-	Light(char* name, float inten,glm::vec3 lightP, glm::vec3 lightD, void* r);
+	Light(char* name, float inten,glm::vec3 lightP, glm::vec3 lightD, Renderer* r);
 	~Light();
 
 	void Move(glm::vec3 move);

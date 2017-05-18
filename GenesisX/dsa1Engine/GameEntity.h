@@ -2,21 +2,26 @@
 
 #include "Mesh.h"
 #include "Object.h"
+#include "Transform.h"
+#include "RidgidBody.h"
+#include "Collider.h"
 #include "Engine.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
-class GameEntity
+#include "Renderer.h"
+
+
+class alignas(16) GameEntity
 	:Object
 {
 public:
 	GameEntity* parent = nullptr;
-	Camera* camParent = nullptr;
-	GameEntity();
-	GameEntity(void *r);
-	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r);
-	GameEntity(std::string nm, std::string filename, Mesh::MeshType t, std::string file, void *r);
-	GameEntity(std::string nm, Mesh &oM, void *r);
+	GameEntity() = default;
+	GameEntity(Renderer *r);
+	GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, Renderer *r);
+	GameEntity(std::string nm, std::string filename, Mesh::MeshType t, std::string file, Renderer* r);
+	GameEntity(std::string nm, Mesh &oM, Renderer *r);
 	~GameEntity() override;
 
 	void Update() override;
@@ -34,7 +39,7 @@ public:
 	
 	std::string name;
 	unsigned int rendID;
-	Mesh objMesh;
+	Mesh* objMesh;
 
 	void Translate(glm::vec3 transVec);
 	void Translate(float x, float y, float z);
@@ -43,7 +48,6 @@ public:
 	void Scale(float c);
 	void Rotate(glm::vec3 RotVec);
 	void Rotate(float x, float y, float z);
-	void CalculateDirections();
 
 	void ApplyForce(glm::vec3 force);
 	void ApplyGravity();
@@ -51,37 +55,31 @@ public:
 	void UpdateVelocity();
 	void FindRadius();
 
-	bool applyGrav;
+	void SetDirection();
+
+	bool applyGrav = false;
+	bool applyFric = false;
 	float maxSpeed;
 	float fricStrength;
 	glm::vec3 gravity;
 
-	struct Transform
-	{
-		glm::vec3 position;
-		glm::vec3 scale;
-		glm::vec3 rotation;
-		glm::vec3 forward = {0,0,-1};
-		glm::vec3 up = { 0,1,0 };
-		glm::vec3 right = { 1,0,0 };
-	}transform;
-	struct RidgidBody
-	{
-		glm::vec3 velocity;
-		glm::vec3 acceleration;
-		glm::vec3 friction;
-		float mass;
-	}ridgidBody;
-	struct Collision
-	{
-		glm::vec3 originalBoundingBox;
-		glm::vec3 boundingBox;
-		glm::vec3 center;
-		float radius;
-	}collider;
+	glm::vec4 color;
+	glm::vec4 specular;
+
+	Transform transform;
+	RidgidBody ridgidBody;
+	Collider collider;
+
+
+	void LoadTexture(char* filename);
+	GLuint GetTexId();
+
+	bool hasTex = false;
+	unsigned int texID = 0;
+
 
 private:
 	glm::vec3 PREV_FORWARD= { 0,0,1 };
-	void* rend;
+	Renderer* rend;
 };
 

@@ -17,8 +17,9 @@ Game::Game(Renderer &r, InputManager &ip)
 	lights[2]->myLight.color = glm::vec4(glm::normalize(glm::vec3(Engine::Random(), Engine::Random(), Engine::Random())), 1);
 	lights[3]->myLight.color = glm::vec4(glm::normalize(glm::vec3(Engine::Random(), Engine::Random(), Engine::Random())), 1);
 	lights[1]->myLight.color = glm::vec4(glm::normalize(glm::vec3(Engine::Random(), Engine::Random(), Engine::Random())), 1);
-
+	
 	UnrenderLights();
+	CreatePlayer();
 
 	//rend->RemoveFromRenderer(light1->sphere.rendID);
 }
@@ -30,40 +31,48 @@ Game::~Game()
 	{
 		if (gameobj[i] != nullptr) { delete gameobj[i]; gameobj[i] = nullptr; }
 	}
+	for (unsigned int i = 0; i < lights.size(); i++)
+	{
+		if (lights[i] != nullptr) { delete lights[i]; lights[i] = nullptr; }
+	}
+	for (unsigned int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i]->bulletModel != nullptr) { delete bullets[i]->bulletModel; bullets[i]->bulletModel = nullptr; }
+		if (bullets[i]->bulletLight != nullptr) { delete bullets[i]->bulletLight; bullets[i]->bulletLight = nullptr; }
+		if (bullets[i] != nullptr) { delete bullets[i]; bullets[i] = nullptr; }
+	}
+	if (player != nullptr) { delete player; player = nullptr; }
 }
 
 void Game::CreateMeshes()
 {
-	//Engine::LoadMesh("DestinyIsland", "models/DestinyIsland/level/di00_01.obj", Mesh::MultipleMesh, "models/DestinyIsland/level/");
-	//Engine::LoadMesh("TraverseTown", "models/TraverseTown/level/tw00_01.obj", Mesh::MultipleMesh, "models/TraverseTown/level/");
-	Engine::LoadMesh("RayGun", "models/raygun.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("HaloSword","models/HaloSword.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("Teapot", "models/teapot.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("Sphere", "models/sphere.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("Box", "models/box.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("Plane", "models/plane.obj", Mesh::SingleMesh, "");
-
 	// making a game obj
 	//gameobj.push_back(new GameEntity("too much pizza", "models/DestinyIsland/level/di00_01.obj", Mesh::MultipleMesh, rend));
 	//gameobj.push_back(new GameEntity("too much pizza", "models/TraverseTown/level/tw00_01.obj", Mesh::MultipleMesh, rend));
-	gameobj.push_back(new GameEntity("The floor", Engine::GetMesh("Plane"), rend));
-	gameobj.push_back(new GameEntity("My box", Engine::GetMesh("Box"), rend));
-	gameobj.push_back(new GameEntity("Big ass wall", Engine::GetMesh("Plane"), rend));
+	gameobj.push_back(new GameEntity("The floor", *Engine::GetMesh("Plane"), rend));
+	gameobj.push_back(new GameEntity("My box", *Engine::GetMesh("Box"), rend));
+	gameobj.push_back(new GameEntity("Big ass wall", *Engine::GetMesh("Plane"), rend));
+	gameobj.push_back(new GameEntity("RayGun", *Engine::GetMesh("RayGun"), rend));
 
 	//gameobj[0]->SetTag("MultiMesh");
 	//gameobj[0]->Scale(0.05f);
 	//gameobj[0]->Rotate(3.038f, 0, 0);
 	gameobj[0]->Scale(100.0f);
-	gameobj[0]->objMesh.LoadTexture("models/textures/brick.jpg");
-	//
-	//
-	gameobj[1]->objMesh.LoadTexture("models/textures/raygunUVTest.tga");
-	//
+	gameobj[0]->LoadTexture("models/textures/brick.jpg");
+	//gameobj[0]->SetTag("Floor");
+	
+	
+	gameobj[1]->LoadTexture("models/textures/raygunUVTest.tga");
+	
 	gameobj[1]->Translate(0, 3.5f, 0);
-	//
-	gameobj[2]->Rotate(1.5, 0, 0);
+	
+	gameobj[2]->Rotate(90, 0, 0);
 	gameobj[2]->Scale(2.0f);
-	gameobj[2]->Translate(4, 3, -4);	
+	gameobj[2]->Translate(4, 3, -4);
+	
+	gameobj[3]->LoadTexture("models/textures/raygunUVTest.tga");
+	rayGunOffset = { 2,-1.5,-3 };
+	gameobj[3]->SetTag("Gun");
 }
 
 void Game::Update()
@@ -153,23 +162,32 @@ void Game::Update()
 	}
 	if (input->IsMouseClick(GLFW_MOUSE_BUTTON_2))
 	{
-		//printf("Mouse CLICKUUUUUU");
 		currentMouseClick = true;
 	}
+	//if (currentMouseClick == true)// && previousMouseClick == false)
+	//{
+	//	Shoot();
+	//}
 	if (currentMouseClick == true && previousMouseClick == false)
 	{
 		Shoot();
 	}
 
-
 	for(unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		(gameobj)[i]->Update();
+		if((gameobj)[i]->name == "RayGun")
+		{
+			(gameobj)[i]->transform.position = rend->cam->camPos + (rend->cam->rotMat *(glm::vec3(-1,0,0) + rayGunOffset));
+			(gameobj)[i]->transform.rotation = glm::vec3(-rend->cam->camRot.x, rend->cam->camRot.y, rend->cam->camRot.z);
+			(gameobj)[i]->Rotate(0, 180, 0);
+			(gameobj)[i]->SetWorldPos();
+		}
 		
 	}
-	for (unsigned int i = 0; i < lights.size(); i++)
+	for (unsigned int i = 0; i < 4; i++)
 	{
-		(lights)[i]->Move(sin(Engine::time.t) / 10.0f, cos(Engine::time.t) / 10.0f,0);
+		//(lights)[i]->Move(sin(Engine::time.t) / 10.0f, cos(Engine::time.t) / 10.0f,0);
 		//(lights)[i]->myLight.color += glm::vec4(sin(Engine::time.t * 3) / 20.0f, cos(Engine::time.t * 3) / 20.0f, sin(Engine::time.t * 3) / 20.0f,1.0);
 	}
 	for (unsigned int i = 0; i < bullets.size(); i++)
@@ -179,7 +197,7 @@ void Game::Update()
 		{
 			if(gameobj[j]->GetTag() == "GameObject")
 			{
-				if(SphereBoxCollision(bullets[i]->bulletModel,gameobj[j]))
+				if(BoxCollision(bullets[i]->bulletModel,gameobj[j]))
 				{
 					bullets[i]->destroyBullet = true;
 				}
@@ -193,6 +211,15 @@ void Game::Update()
 			//DestroyBullet(i);
 			StickBullet(i);
 			//if (bulletHolder != nullptr) { delete bulletHolder;  bulletHolder = nullptr; }
+		}
+	}
+
+	for (unsigned int i = 0; i < gameobj.size(); i++)
+	{
+		if (BoxCollision(player->myPlayer, gameobj[i]))
+		{
+			player->grounded = true;
+			//player->myPlayer->transform.position.y = gameobj[i]->transform.position.y + .5f;
 		}
 	}
 	//(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
@@ -218,9 +245,12 @@ void Game::UnrenderLights()
 	}
 }
 
-void Game::DeleteBullet(unsigned int i)
+void Game::DeleteBullet(unsigned int j)
 {
-	bullets.erase(bullets.begin() + bullets[i]->bulletID);
+	
+	unsigned int id = bullets[j]->bulletID;
+	delete bullets[j];
+	bullets.erase(bullets.begin() + id);
 	for (unsigned int i = 0; i < bullets.size(); i++)
 	{
 		bullets[i]->bulletID = i;
@@ -241,6 +271,7 @@ void Game::StickBullet(unsigned int i)
 	bullets[i]->bulletModel->applyGrav = false;
 	//rend->RemoveFromLights(bullets[i]->bulletLight->lightID);
 	gameobj.push_back(bullets[i]->bulletModel);
+	lights.push_back(bullets[i]->bulletLight);
 	DeleteBullet(i);
 }
 
@@ -267,65 +298,97 @@ bool Game::SphereCollision(GameEntity *obj1, GameEntity *obj2)
 
 	glm::vec3 center1 = obj1->transform.position;
 	glm::vec3 center2 = obj2->transform.position;
-	glm::vec3 distance = center2 - center1;
+	glm::vec3 distance = center1 - center2;
 
-	float dist = glm::length(distance);
+	float dist = glm::pow(distance.z, 2) + glm::pow(distance.y, 2) + glm::pow(distance.x, 2);
 
-	if(dist <= (radius1 + radius2))
+	if(dist <= glm::pow((radius1 + radius2), 2))
 	{
+		obj1->collider.Colliding = true;
+		obj2->collider.Colliding = true;
 		return true;
 	}
+	obj1->collider.Colliding = false;
+	obj2->collider.Colliding = false;
 	return false;
 }
 
 bool Game::BoxCollision(GameEntity *obj1, GameEntity *obj2)
 {
-	return false;
+	bool xTrue = false;
+	bool yTrue = false;
+	bool zTrue = false;
+
+
+	if ((obj1->collider.bbMin.x - obj1->collider.skin) < (obj2->collider.bbMax.x + obj2->collider.skin) && (obj1->collider.bbMax.x + obj1->collider.skin) > (obj2->collider.bbMin.x - obj2->collider.skin))
+	{																									
+		xTrue = true;																					
+	}																									
+	if ((obj1->collider.bbMin.y - obj1->collider.skin) < (obj2->collider.bbMax.y + obj2->collider.skin) && (obj1->collider.bbMax.y + obj1->collider.skin) > (obj2->collider.bbMin.y - obj2->collider.skin))
+	{																									
+		yTrue = true;																					
+	}																									
+	if ((obj1->collider.bbMin.z - obj1->collider.skin) < (obj2->collider.bbMax.z + obj2->collider.skin) && (obj1->collider.bbMax.z + obj1->collider.skin) > (obj2->collider.bbMin.z - obj2->collider.skin))
+	{																									
+		zTrue = true;
+	}
+	if(xTrue && yTrue && zTrue)
+	{
+		obj1->collider.Colliding = true;
+		obj2->collider.Colliding = true;
+		return true;
+	}
+	obj1->collider.Colliding = false;
+	obj2->collider.Colliding = false;
+	return false; 
 }
 
 bool Game::SphereBoxCollision(GameEntity * sphere, GameEntity * box)
 {
-	float sphereRadius = sphere->collider.radius;
-	glm::vec3 sphereCenter = sphere->transform.position;
+	float dist2;
+	float rad2 = glm::pow(sphere->collider.radius, 2);
 
-	glm::vec3 boxX = glm::vec3(box->collider.boundingBox.x + box->transform.position.x, box->transform.position.y, box->transform.position.z);
-	glm::vec3 boxY = glm::vec3(box->transform.position.x, box->collider.boundingBox.y + box->transform.position.y, box->transform.position.z);
-	glm::vec3 boxZ = glm::vec3(box->transform.position.x, box->transform.position.y, box->collider.boundingBox.z + box->transform.position.z);
-	glm::vec3 distanceX = boxX - sphereCenter;
-	glm::vec3 distanceY = boxY - sphereCenter;
-	glm::vec3 distanceZ = boxZ - sphereCenter;
+	glm::vec3 distance = box->transform.position - sphere->transform.position;
 
-	glm::vec3 distanceFlipX = (boxX * -1.0f) - sphereCenter;
-	glm::vec3 distanceFlipY = (boxY * -1.0f) - sphereCenter;
-	glm::vec3 distanceFlipZ = (boxZ * -1.0f) - sphereCenter;
+	glm::vec3 half = (box->collider.bbMin - box->collider.bbMax)/2.0f;
+	glm::vec3 p = box->transform.position + glm::clamp(distance, -half, half);
+	dist2 = glm::pow((p.x - sphere->transform.position.x),2) + glm::pow((p.y - sphere->transform.position.y),2) + glm::pow((p.z - sphere->transform.position.z),2);
 
-	float distX = glm::length(distanceX);
-	float distY = glm::length(distanceY);
-	float distZ = glm::length(distanceZ);
-
-	float distFlipX = glm::length(distanceFlipX);
-	float distFlipY = glm::length(distanceFlipY);
-	float distFlipZ = glm::length(distanceFlipZ);
-
-	if (distX <= sphereRadius || distFlipX <= sphereRadius)
+	if (dist2 <= rad2)
 	{
+		box->collider.Colliding = true;
+		sphere->collider.Colliding = true;
 		return true;
 	}
-	if (distY <= sphereRadius || distFlipY <= sphereRadius)
-	{
-		return true;
-	}
-	if (distZ <= sphereRadius || distFlipZ <= sphereRadius)
-	{
-		return true;
-	}
+	box->collider.Colliding = false;
+	sphere->collider.Colliding = false;
 	return false;
 }
 
 void Game::Shoot()
 {
+	glm::vec3 bulletModelOffset =  rayGunOffset + glm::vec3(0,0,-5);
+	glm::vec3 moveBullet = rend->cam->camPos + (rend->cam->rotMat *(glm::vec3(-1, 0, 0) + bulletModelOffset));
+
+	glm::vec3 lightOffset = bulletModelOffset + glm::vec3(0, 0, 1);
+	glm::vec3 moveLight = rend->cam->camPos + (rend->cam->rotMat *(glm::vec3(-1, 0, 0) + lightOffset));
+
 	unsigned int pos = bullets.size();
-	bullets.push_back( new Bullet(30, &Engine::GetMesh("Sphere"), rend));
+	bullets.push_back( new Bullet(30, *Engine::GetMesh("Box"), rend));
 	bullets[pos]->bulletID = pos;
+	bullets[pos]->bulletModel->transform.position = moveBullet;
+	bullets[pos]->bulletLight->sphere->transform.position = moveLight;
+	bullets[pos]->bulletLight->myLight.lightPos = moveLight;
+}
+
+void Game::CreatePlayer()
+{
+	player = new Player("Mike", *Engine::GetMesh("Box"), rend);
+	player->myPlayer->applyGrav = true;
+	player->myPlayer->applyFric = true;
+	player->myPlayer->fricStrength = 0.4f;
+	player->myPlayer->Translate(0, 50, 10);
+	player->myPlayer->collider.skin = 8.0f;
+	rend->RemoveFromRenderer(player->myPlayer->rendID);
 }
 

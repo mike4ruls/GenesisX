@@ -1,10 +1,14 @@
 #pragma once
 #include "InputManager.h"
+#include "Renderer.h"
 #include <glm\glm.hpp>
 #include <GLFW\glfw3.h>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
-class Camera
+
+class Player;
+
+class alignas(16) Camera
 {
 public:
 	Camera();
@@ -44,8 +48,12 @@ public:
 	void SetView();
 	void SetProjection();
 	void ResetCamera();
+	void UpdatePlayerCam(float dt);
 	void UpdateCam(float dt);
+	
+	void SetPlayer(Player &p);
 
+	Player* player = nullptr;
 
 private:
 	//don't think these do anything

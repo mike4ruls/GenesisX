@@ -190,3 +190,22 @@ out pretty well
 -Collison detection is still kind of wonky
 -Not sure if sphere on box collision is working correctly
 -Also I cannot tell if i'm leaking memory or not >:/
+
+===Version 8.0=== 5/08/17
+-Added Ray Gun rotation with the camera
+-Added Offset for the bullets to shoot from the ray gun tip
+-Added rapid fire shooting
+-Added package to check for memory leaks
+-A SHIT TON OF MEMORY LEAKS APPERENTLY
+-Fixed 95% of the memory leaks(UPDATE: FINALLY FIXED ALL THE DAM LEAKS...144 leaks to 0...)
+-Added foward declaration
+-Added smart pointers(kind of...)
+-Added AABB/Sphere/BoxSphere Collision(kind of works)
+-Added skin variable which is a float that basically starts collision early
+-Bullets can now collide with the floor
+-Added player class that can collide with ground
+-Jumping acts like a jet pack
+-Turned on gravity and friction for player only
+
+==Bugs==
+-Collision detection is still wonky

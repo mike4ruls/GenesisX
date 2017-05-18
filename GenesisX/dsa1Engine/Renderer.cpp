@@ -1,4 +1,7 @@
 #include "Renderer.h"
+#include "GameEntity.h"
+#include "Camera.h"
+#include "Light.h"
 #include <src\SOIL.h>
 
 
@@ -16,9 +19,9 @@ Renderer::Renderer(Camera *c, ShaderManager& man, int *w, int *h)
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	currentSky = 1;
 
-	SkyBoxModel = GameEntity("skybox", "models/box.obj", Mesh::SingleMesh,"",this);
-	SkyBoxModel.SetTag("SkyBox");
-	RemoveFromRenderer(SkyBoxModel.rendID);
+	SkyBoxModel = new GameEntity("skybox", "models/box.obj", Mesh::SingleMesh,"",this);
+	SkyBoxModel->SetTag("SkyBox");
+	RemoveFromRenderer(SkyBoxModel->rendID);
 	LoadAllSkyBoxes();
 
 
@@ -32,6 +35,8 @@ Renderer::Renderer(Camera *c, ShaderManager& man, int *w, int *h)
 
 Renderer::~Renderer()
 {
+	if (SkyBoxModel->objMesh != nullptr) { delete SkyBoxModel->objMesh; SkyBoxModel->objMesh = nullptr; }
+	if (SkyBoxModel != nullptr) { delete SkyBoxModel; SkyBoxModel = nullptr; }
 }
 void Renderer::Update() 
 {
@@ -132,11 +137,11 @@ void Renderer::FowardPass(GameEntity *obj)
 	glUniformMatrix4fv(2, 1, GL_FALSE, &cam->ProjectMatrix[0][0]);
 	glUniform1f(7, time);
 	glUniform3f(8, cam->camPos.x, cam->camPos.y, cam->camPos.z);
-	glUniform1i(10, obj->objMesh.hasTex);
+	glUniform1i(10, obj->hasTex);
 	//glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
-	if (obj->objMesh.hasTex)
+	if (obj->hasTex)
 	{
-		glBindTexture(GL_TEXTURE_2D, obj->objMesh.GetTexId());
+		glBindTexture(GL_TEXTURE_2D, obj->GetTexId());
 	}
 	if (obj->GetTag() == "Light")
 	{
@@ -180,6 +185,7 @@ GLuint Renderer::loadCubeMap(std::vector<const GLchar*> faces)
 		image = SOIL_load_image(faces[i],&width,&height,0,SOIL_LOAD_RGB);
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
 		GL_RGB, width, height, 0 , GL_RGB, GL_UNSIGNED_BYTE, image);
+		SOIL_free_image_data(image);
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -257,11 +263,11 @@ void Renderer::DrawSkyBox()
 	glm::mat4 view = glm::mat4(glm::mat3(cam->viewMatrix));
 	glUniformMatrix4fv(1, 1, GL_FALSE, &view[0][0]);
 	glUniformMatrix4fv(2, 1, GL_FALSE, &cam->ProjectMatrix[0][0]);
-	glBindVertexArray(SkyBoxModel.GetVertArr());
+	glBindVertexArray(SkyBoxModel->GetVertArr());
 	glBindTexture(GL_TEXTURE_CUBE_MAP, Skybox);
 	glDepthFunc(GL_LEQUAL);
 
-	glDrawArrays(GL_TRIANGLES, 0, SkyBoxModel.GetCount());
+	glDrawArrays(GL_TRIANGLES, 0, SkyBoxModel->GetCount());
 	glBindVertexArray(0);
 	glDepthMask(GL_TRUE);
 	glUseProgram(shaderM->GetProgram());
@@ -408,16 +414,16 @@ void Renderer::GeometryPass(GameEntity &obj)
 		//glDepthFunc(GL_ALWAYS);
 		//glFrontFace(GL_CCW);
 
-		for(unsigned int i = 0; i < obj.objMesh.myMeshes.size(); i++)
+		for(unsigned int i = 0; i < (&obj)->objMesh->myMeshes.size(); i++)
 		{
-			glUniform4f(6, (&obj)->objMesh.color.x, (&obj)->objMesh.color.y, (&obj)->objMesh.color.z, (&obj)->objMesh.color.w);
-			glUniform1i(11, (&obj)->objMesh.myMeshes[i].hasTex);
-			if ((&obj)->objMesh.myMeshes[i].hasTex)
+			glUniform4f(6, (&obj)->color.x, (&obj)->color.y, (&obj)->color.z, (&obj)->color.w);
+			glUniform1i(11, (&obj)->objMesh->myMeshes[i].hasTex);
+			if ((&obj)->objMesh->myMeshes[i].hasTex)
 			{
-				glBindTexture(GL_TEXTURE_2D, (&obj)->objMesh.myMeshes[i].texID);
+				glBindTexture(GL_TEXTURE_2D, (&obj)->objMesh->myMeshes[i].texID);
 			}
-			glBindVertexArray((&obj)->objMesh.myMeshes[i].newVertArr);
-			glDrawArrays(GL_TRIANGLES, 0, ((&obj)->objMesh.myMeshes[i].count));
+			glBindVertexArray((&obj)->objMesh->myMeshes[i].newVertArr);
+			glDrawArrays(GL_TRIANGLES, 0, ((&obj)->objMesh->myMeshes[i].count));
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
@@ -426,12 +432,12 @@ void Renderer::GeometryPass(GameEntity &obj)
 		//glDepthFunc(GL_LESS);
 	}
 	else {
-		glUniform4f(6, (&obj)->objMesh.color.x, (&obj)->objMesh.color.y, (&obj)->objMesh.color.z, (&obj)->objMesh.color.w);
-		glUniform1i(11, (&obj)->objMesh.hasTex);
+		glUniform4f(6, (&obj)->color.x, (&obj)->color.y, (&obj)->color.z, (&obj)->color.w);
+		glUniform1i(11, (&obj)->hasTex);
 		//glUniform4f(13, gameObjs[i]->objMesh.specular.x, gameObjs[i]->objMesh.specular.y, gameObjs[i]->objMesh.specular.z, gameObjs[i]->objMesh.specular.w);
-		if ((&obj)->objMesh.hasTex)
+		if ((&obj)->hasTex)
 		{
-			glBindTexture(GL_TEXTURE_2D, (&obj)->objMesh.GetTexId());
+			glBindTexture(GL_TEXTURE_2D, (&obj)->GetTexId());
 		}
 		if ((&obj)->GetTag() == "Light")
 		{

@@ -109,6 +109,7 @@ GLuint ShaderManager::LoadShader(const char * file, GLenum shaderType)
 			glDeleteShader(prog);
 			delete[] debug; debug = nullptr;
 		}
+		if (fileContent) { delete fileContent; fileContent = nullptr; }
 	}	
 	return prog;
 }

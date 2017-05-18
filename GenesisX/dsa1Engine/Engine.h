@@ -1,9 +1,15 @@
 #pragma once
 #include "Timer.h"
 #include "Camera.h"
+#include "Renderer.h"
+#include <memory>
 #include "ShaderManager.h"
 #include "Mesh.h"
 #include <glm\glm.hpp>
+
+//class Renderer;
+class Game;
+class Camera;
 
 class Engine
 {
@@ -25,6 +31,9 @@ public:
 	InputManager input;
 	ShaderManager* shaderM;
 
+	Renderer* newRend;
+	Game* myGame;
+
 	//static stuff
 	static void Start();
 	static void Stop();
@@ -32,9 +41,9 @@ public:
 	static float Random();
 
 	static bool LoadMesh(std::string meshName, std::string fileName, Mesh::MeshType mT, std::string filePath);
-	static Mesh GetMesh(std::string name);
+	static Mesh* GetMesh(std::string name);
 
-	static std::map <std::string, Mesh> MeshDictionary;
+	static std::map <std::string, std::shared_ptr<Mesh>> MeshDictionary;
 
 	static Timer time;
 

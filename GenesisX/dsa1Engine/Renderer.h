@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 #include "ShaderManager.h"
-#include "Light.h"
 #include <GL\glew.h>
-#include "Camera.h"
-#include "GameEntity.h"
 
+class GameEntity;
+class Light;
+class Camera;
 
 class Renderer
 {
@@ -38,7 +38,7 @@ public:
 	unsigned int currentSky;
 	ShaderManager* shaderM;
 	Camera* cam;
-	GameEntity SkyBoxModel;
+	GameEntity* SkyBoxModel;
 	std::vector<GLuint> loadedSkyBoxes;
 	GLuint Skybox;
 

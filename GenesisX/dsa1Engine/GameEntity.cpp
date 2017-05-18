@@ -1,56 +1,61 @@
 #include "GameEntity.h"
-#include "Renderer.h"
 
-
-
-GameEntity::GameEntity()
-{
-}
-
-GameEntity::GameEntity(void *r)
+GameEntity::GameEntity(Renderer *r)
 	:Object()
 {
 	name = "";
 	tag = "GameObject";
-	objMesh = Mesh();
+	objMesh = new Mesh();
 	rend = r;
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
+	collider.skin = 0.0f;
 	ResetGameEntity();
 }
-GameEntity::GameEntity(std::string nm, Mesh &oM, void *r)
+GameEntity::GameEntity(std::string nm, Mesh &oM, Renderer *r)
 	:Object()
 {
 	name = nm;
 	tag = "GameObject";
-	objMesh = oM;
+	objMesh = &oM;
 	rend = r;
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
+	collider.skin = 0.0f;
 	ResetGameEntity();
 }
-GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, void *r)
+GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, Renderer *r)
 	:Object()
 {
 	name = nm;
 	tag = "GameObject";
-	objMesh = Mesh(v, i);
+	objMesh = new Mesh(v, i);
 	rend = r;
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
+	collider.skin = 0.0f;
 	ResetGameEntity();
 }
 
-GameEntity::GameEntity(std::string nm, std::string filename, Mesh::MeshType t, std::string file,void * r)
+GameEntity::GameEntity(std::string nm, std::string filename, Mesh::MeshType t, std::string file,Renderer * r)
 {
 	name = nm;
 	tag = "GameObject";
-	objMesh = Mesh(filename, t, file);
+	objMesh = new Mesh(filename, t, file);
 	rend = r;
-	rendID = ((Renderer*)rend)->AddToRenderer(*this);
+	rendID = rend->AddToRenderer(*this);
+	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
+	collider.skin = 0.0f;
 	ResetGameEntity();
 }
 
 GameEntity::~GameEntity()
 {
-	//((Renderer*)rend)->RemoveFromRenderer(rendID);
+	//rend->RemoveFromRenderer(rendID);
 }
 void GameEntity::Update()
 {
@@ -60,12 +65,13 @@ void GameEntity::Update()
 	{
 		ApplyGravity();
 	}
-	//CalculateFric();
-	UpdateVelocity();
-	if(transform.forward != PREV_FORWARD)
+	if(applyFric)
 	{
-		CalculateDirections();
+		CalculateFric();
 	}
+	UpdateVelocity();
+	//SetDirection();
+	//printf("x: %.3f, y: %.3f, z: %.3f\n ", transform.forward.x, transform.forward.y, transform.forward.z);
 }
 void GameEntity::SetWorldPos()
 {
@@ -78,9 +84,22 @@ void GameEntity::SetWorldPos()
 	if (parent != nullptr) {
 		worldPos = parent->worldPos * worldPos;
 	}
-	if (camParent != nullptr) {
-		worldPos = camParent->viewMatrix * worldPos;
+
+	collider.bbMin = transform.position - collider.boundingBox;
+	collider.bbMax = transform.position + collider.boundingBox;
+	collider.bbMin = glm::vec3(worldPos * glm::vec4(collider.bbMin,1));
+	collider.bbMax = glm::vec3(worldPos * glm::vec4(collider.bbMax,1));
+
+	float r = collider.boundingBox.x;
+	if (r < collider.boundingBox.y)
+	{
+		r = collider.boundingBox.y;
 	}
+	if (r < collider.boundingBox.y)
+	{
+		r = collider.boundingBox.y;
+	}
+	collider.radius = r;
 }
 void GameEntity::ResetGameEntity()
 {
@@ -104,12 +123,12 @@ void GameEntity::ResetGameEntity()
 }
 GLuint GameEntity::GetVertArr()
 {
-	return objMesh.vertArr;
+	return objMesh->vertArr;
 }
 
 unsigned int GameEntity::GetCount()
 {
-	return objMesh.count;
+	return objMesh->count;
 }
 
 void GameEntity::SetTag(std::string tagName)
@@ -126,9 +145,9 @@ void GameEntity::FindRadius()
 	float largestX = 0;
 	float largestY = 0;
 	float largestZ = 0;
-	for(unsigned int i = 0; i< objMesh.verts.size();i++)
+	for(unsigned int i = 0; i< objMesh->verts.size();i++)
 	{
-		glm::vec3 pos = objMesh.verts[i].pos;
+		glm::vec3 pos = objMesh->verts[i].pos;
 		float x = glm::abs(pos.x);
 		float y = glm::abs(pos.y);
 		float z = glm::abs(pos.z);
@@ -145,22 +164,30 @@ void GameEntity::FindRadius()
 			largestZ = z;
 		}
 	}
-	if(largestX == 0)
+	/*if(largestX == 0)
 	{
-		largestX = 0.5f;
+		largestX = 0.5;
 	}
 	if (largestY == 0)
 	{
-		largestY = 0.5f;
+		largestY = 0.5;
 	}
 	if (largestZ == 0)
 	{
-		largestZ = 0.5f;
-	}
+		largestZ = 0.5;
+	}*/
+	collider.bbMin = {0, 0, 0};
+	collider.bbMax = {0, 0, 0};
+	collider.boundingBox = glm::abs(glm::vec3(largestX, largestY, largestZ));
+}
 
-	collider.originalBoundingBox = glm::vec3(largestX,largestY,largestZ);
-	collider.boundingBox = collider.originalBoundingBox * transform.scale;
-	collider.radius = glm::distance(glm::vec3( 0,0,0 ),collider.boundingBox);
+void GameEntity::SetDirection()
+{
+	glm::mat3 myRot = (glm::mat3) glm::yawPitchRoll(transform.rotation.y, transform.rotation.x, transform.rotation.z);
+
+	transform.up = myRot * glm::vec3(0, 1, 0);
+	transform.right = myRot * glm::vec3(1, 0, 0);
+	transform.forward = glm::cross(transform.up, transform.right);
 }
 
 #pragma region Tranform Methods
@@ -189,8 +216,6 @@ void GameEntity::Scale(glm::vec3 scaleVec)
 	transform.scale.y = scaleVec.y;
 	transform.scale.z = scaleVec.z;
 
-	collider.boundingBox = collider.originalBoundingBox * transform.scale;
-	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 
@@ -200,8 +225,6 @@ void GameEntity::Scale(float x, float y, float z)
 	transform.scale.y = y;
 	transform.scale.z = z;
 
-	collider.boundingBox = collider.originalBoundingBox * transform.scale;
-	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 
@@ -211,34 +234,29 @@ void GameEntity::Scale(float c)
 	transform.scale.y = c;
 	transform.scale.z = c;
 
-	collider.boundingBox = collider.originalBoundingBox * transform.scale;
-	collider.radius = glm::distance({ 0,0,0 }, collider.boundingBox);
 	SetWorldPos();
 }
 
 void GameEntity::Rotate(glm::vec3 RotVec)
 {
-	transform.rotation.x += RotVec.x;
-	transform.rotation.y += RotVec.y;
-	transform.rotation.z += RotVec.z;
+	glm::vec3 newRot = {RotVec.x *(3.14/180), RotVec.y *(3.14 / 180) ,RotVec.z *(3.14 / 180) };
+
+	transform.rotation.x += newRot.x;
+	transform.rotation.y += newRot.y;
+	transform.rotation.z += newRot.z;
 
 	SetWorldPos();
 }
 
 void GameEntity::Rotate(float x, float y, float z)
 {
-	transform.rotation.x += x;
-	transform.rotation.y += y;
-	transform.rotation.z += z;
+	glm::vec3 newRot = { x *(3.14 / 180), y *(3.14 / 180) ,z *(3.14 / 180) };
+
+	transform.rotation.x += newRot.x;
+	transform.rotation.y += newRot.y;
+	transform.rotation.z += newRot.z;
 
 	SetWorldPos();
-}
-void GameEntity::CalculateDirections()
-{
-	transform.up = glm::cross(glm::cross(transform.forward, glm::vec3(0, 1, 0)), transform.forward);
-	transform.right = glm::cross(transform.up, transform.forward);
-
-	PREV_FORWARD = transform.forward;
 }
 #pragma endregion
 
@@ -283,3 +301,35 @@ void GameEntity::UpdateVelocity()
 	Translate(ridgidBody.velocity);
 }
 #pragma endregion
+void GameEntity::LoadTexture(char * filename)
+{
+	//FREE_IMAGE_FORMAT type = FreeImage_GetFileType("models/textures/raygunUVTest.tga",0);
+	//FIBITMAP* image = FreeImage_Load(type, "models/textures/raygunUVTest.tga");
+	FREE_IMAGE_FORMAT type = FreeImage_GetFileType(filename, 0);
+	FIBITMAP* image = FreeImage_Load(type, filename);
+	if (image == nullptr) return;
+
+	FIBITMAP* image32Bit = FreeImage_ConvertTo32Bits(image);
+	FreeImage_Unload(image);
+
+	texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	int texWidth = FreeImage_GetWidth(image32Bit);
+	int texHeight = FreeImage_GetHeight(image32Bit);
+	BYTE* texAddress = FreeImage_GetBits(image32Bit);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)texAddress);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	FreeImage_Unload(image32Bit);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	hasTex = true;
+}
+
+GLuint GameEntity::GetTexId()
+{
+	return texID;
+}

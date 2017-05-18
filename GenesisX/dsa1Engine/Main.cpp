@@ -1,3 +1,4 @@
+//#include <vld.h>
 #include "Engine.h"
 int main()
 {

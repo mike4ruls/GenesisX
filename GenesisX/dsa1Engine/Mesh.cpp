@@ -42,8 +42,6 @@ Mesh::Mesh(std::vector<Vertex> &v)
 		sizeof(glm::vec3), // stride
 		0); // the offset 
 	glBindVertexArray(0);
-	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 Mesh::Mesh(std::string filename, MeshType m, std::string file)
 {
@@ -305,39 +303,8 @@ Mesh::Mesh(std::string filename, MeshType m, std::string file)
 
 Mesh::~Mesh()
 {
-}
-
-void Mesh::LoadTexture(char * filename)
-{
-	//FREE_IMAGE_FORMAT type = FreeImage_GetFileType("models/textures/raygunUVTest.tga",0);
-	//FIBITMAP* image = FreeImage_Load(type, "models/textures/raygunUVTest.tga");
-	FREE_IMAGE_FORMAT type = FreeImage_GetFileType(filename, 0);
-	FIBITMAP* image = FreeImage_Load(type, filename);
-	if (image == nullptr) return;
-
-	FIBITMAP* image32Bit = FreeImage_ConvertTo32Bits(image);
-	FreeImage_Unload(image);
-
-	texID;
-	glGenTextures(1, &texID);
-	glBindTexture(GL_TEXTURE_2D, texID);
-
-	int texWidth = FreeImage_GetWidth(image32Bit);
-	int texHeight = FreeImage_GetHeight(image32Bit);
-	BYTE* texAddress = FreeImage_GetBits(image32Bit);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, texWidth, texHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)texAddress);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	FreeImage_Unload(image32Bit);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	hasTex = true;
-}
-
-GLuint Mesh::GetTexId()
-{
-	return texID;
+	glDeleteVertexArrays(1, &vertArr);
+	glDeleteBuffers(1, &vertBuf);
 }
 void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm::vec2> uv, std::vector<glm::vec3> nor)
 {
@@ -406,8 +373,6 @@ void Mesh::CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm:
 		sizeof(Vertex),
 		reinterpret_cast<void *>(offsetof(Vertex, normal)));
 	glBindVertexArray(0);
-	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	specular = glm::vec4(2.0f,2.0f,2.0f,2.0f);
 }
 
 void Mesh::CreateBuffer()
@@ -459,6 +424,4 @@ void Mesh::CreateBuffer()
 			sizeof(Vertex), 
 			reinterpret_cast<void *>(offsetof(Vertex, normal)));
 	glBindVertexArray(0);
-	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
 }

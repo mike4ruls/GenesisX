@@ -2,13 +2,15 @@
 #include "GameEntity.h"
 #include "Light.h"
 #include "Camera.h"
+#include "Renderer.h"
+
 
 class Bullet
 {
 public:
 	Bullet();
-	Bullet(float s, std::string file, void* r);
-	Bullet(float s, Mesh* myMesh, void* r);
+	Bullet(float s, std::string file, Renderer* r);
+	Bullet(float s, Mesh &myMesh, Renderer* r);
 	~Bullet();
 
 	void Update();
