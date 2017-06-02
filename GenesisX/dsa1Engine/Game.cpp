@@ -42,6 +42,7 @@ Game::~Game()
 		if (bullets[i] != nullptr) { delete bullets[i]; bullets[i] = nullptr; }
 	}
 	if (player != nullptr) { delete player; player = nullptr; }
+	if (rayGun != nullptr) { delete rayGun; rayGun = nullptr; }
 }
 
 void Game::CreateMeshes()
@@ -51,28 +52,31 @@ void Game::CreateMeshes()
 	//gameobj.push_back(new GameEntity("too much pizza", "models/TraverseTown/level/tw00_01.obj", Mesh::MultipleMesh, rend));
 	gameobj.push_back(new GameEntity("The floor", *Engine::GetMesh("Plane"), rend));
 	gameobj.push_back(new GameEntity("My box", *Engine::GetMesh("Box"), rend));
-	gameobj.push_back(new GameEntity("Big ass wall", *Engine::GetMesh("Plane"), rend));
-	gameobj.push_back(new GameEntity("RayGun", *Engine::GetMesh("RayGun"), rend));
+	//gameobj.push_back(new GameEntity("Big ass wall", *Engine::GetMesh("Plane"), rend));
+	rayGun = new GameEntity("RayGun", *Engine::GetMesh("RayGun"), rend);
 
 	//gameobj[0]->SetTag("MultiMesh");
 	//gameobj[0]->Scale(0.05f);
-	//gameobj[0]->Rotate(3.038f, 0, 0);
+	gameobj[0]->Rotate(3.038f, 0, 0);
 	gameobj[0]->Scale(100.0f);
 	gameobj[0]->LoadTexture("models/textures/brick.jpg");
 	//gameobj[0]->SetTag("Floor");
 	
 	
 	gameobj[1]->LoadTexture("models/textures/raygunUVTest.tga");
-	
+	gameobj[1]->Rotate(90, 0, 0);
 	gameobj[1]->Translate(0, 3.5f, 0);
 	
-	gameobj[2]->Rotate(90, 0, 0);
-	gameobj[2]->Scale(2.0f);
-	gameobj[2]->Translate(4, 3, -4);
+	//gameobj[2]->Rotate(90, 0, 0);
+	//gameobj[2]->Scale(2.0f);
+	//gameobj[2]->Translate(4, 3, -4);
 	
-	gameobj[3]->LoadTexture("models/textures/raygunUVTest.tga");
+	rayGun->LoadTexture("models/textures/raygunUVTest.tga");
 	rayGunOffset = { 2,-1.5,-3 };
-	gameobj[3]->SetTag("Gun");
+	rayGun->SetTag("Gun");
+
+
+	GenrateWall(10, 10, 0);
 }
 
 void Game::Update()
@@ -176,13 +180,10 @@ void Game::Update()
 	for(unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		(gameobj)[i]->Update();
-		if((gameobj)[i]->name == "RayGun")
-		{
-			(gameobj)[i]->transform.position = rend->cam->camPos + (rend->cam->rotMat *(glm::vec3(-1,0,0) + rayGunOffset));
-			(gameobj)[i]->transform.rotation = glm::vec3(-rend->cam->camRot.x, rend->cam->camRot.y, rend->cam->camRot.z);
-			(gameobj)[i]->Rotate(0, 180, 0);
-			(gameobj)[i]->SetWorldPos();
-		}
+		rayGun->transform.position = rend->cam->camPos + (rend->cam->rotMat *(glm::vec3(-1,0,0) + rayGunOffset));
+		rayGun->transform.rotation = glm::vec3(-rend->cam->camRot.x, rend->cam->camRot.y, rend->cam->camRot.z);
+		rayGun->Rotate(0, 180, 0);
+		rayGun->SetWorldPos();
 		
 	}
 	for (unsigned int i = 0; i < 4; i++)
@@ -213,14 +214,22 @@ void Game::Update()
 			//if (bulletHolder != nullptr) { delete bulletHolder;  bulletHolder = nullptr; }
 		}
 	}
-
+	int collisions = 0;
 	for (unsigned int i = 0; i < gameobj.size(); i++)
 	{
 		if (BoxCollision(player->myPlayer, gameobj[i]))
 		{
-			player->grounded = true;
+			if (gameobj[i]->GetTag() != "Gun")
+			{
+				collisions++;
+				player->grounded = true;
+			}
 			//player->myPlayer->transform.position.y = gameobj[i]->transform.position.y + .5f;
 		}
+	}
+	if (collisions == 0) 
+	{
+		player->grounded = false;
 	}
 	//(gameobj)[0]->Translate(sin(Engine::time.t)/20.0f,0.0f,0.0f);
 	//gameobj[0]->Scale(abs(sin(Engine::time.t))/5.0f);
@@ -291,6 +300,21 @@ void Game::BulletLightsOff()
 	}
 }
 
+void Game::GenrateWall(int width, int height, float spacing)
+{
+	for(float i = 0; i <= width; i++)
+	{
+		for (float j = 0; j <= height; j++)
+		{
+			GameEntity* block = new GameEntity("Wall Bock", *Engine::GetMesh("Box"), rend);
+			block->Translate(0, 1.0f, 0);
+			block->Scale(6,6,0.5f);
+			block->Translate(spacing + ((i) * block->transform.scale.x), spacing + ((j) * block->transform.scale.y), 0 );
+			gameobj.push_back(block);
+		}
+	}
+}
+
 bool Game::SphereCollision(GameEntity *obj1, GameEntity *obj2)
 {
 	float radius1 = obj1->collider.radius;
@@ -315,32 +339,53 @@ bool Game::SphereCollision(GameEntity *obj1, GameEntity *obj2)
 
 bool Game::BoxCollision(GameEntity *obj1, GameEntity *obj2)
 {
-	bool xTrue = false;
-	bool yTrue = false;
-	bool zTrue = false;
 
+	glm::vec3 obj1Min = obj1->collider.bbMin - obj1->collider.skin;
+	glm::vec3 obj1Max = obj1->collider.bbMax + obj1->collider.skin;
 
-	if ((obj1->collider.bbMin.x - obj1->collider.skin) < (obj2->collider.bbMax.x + obj2->collider.skin) && (obj1->collider.bbMax.x + obj1->collider.skin) > (obj2->collider.bbMin.x - obj2->collider.skin))
-	{																									
-		xTrue = true;																					
-	}																									
-	if ((obj1->collider.bbMin.y - obj1->collider.skin) < (obj2->collider.bbMax.y + obj2->collider.skin) && (obj1->collider.bbMax.y + obj1->collider.skin) > (obj2->collider.bbMin.y - obj2->collider.skin))
-	{																									
-		yTrue = true;																					
-	}																									
-	if ((obj1->collider.bbMin.z - obj1->collider.skin) < (obj2->collider.bbMax.z + obj2->collider.skin) && (obj1->collider.bbMax.z + obj1->collider.skin) > (obj2->collider.bbMin.z - obj2->collider.skin))
-	{																									
-		zTrue = true;
-	}
-	if(xTrue && yTrue && zTrue)
+	glm::vec3 obj2Min = obj2->collider.bbMin - obj2->collider.skin;
+	glm::vec3 obj2Max = obj2->collider.bbMax + obj2->collider.skin;
+
+	if (!(obj1Min.x < obj2Max.x))
 	{
-		obj1->collider.Colliding = true;
-		obj2->collider.Colliding = true;
-		return true;
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
 	}
-	obj1->collider.Colliding = false;
-	obj2->collider.Colliding = false;
-	return false; 
+	if (!((obj1Max.x > obj2Min.x)))
+	{
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
+	}
+	if (!((obj1Min.y < obj2Max.y)))
+	{
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
+	}
+	if (!((obj1Max.y > obj2Min.y)))
+	{
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
+	}
+	if (!((obj1Min.z < obj2Max.z)))
+	{
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
+	}
+	if (!((obj1Max.z > obj2Min.z)))
+	{
+		obj1->collider.Colliding = false;
+		obj2->collider.Colliding = false;
+		return false;
+	}
+
+	obj1->collider.Colliding = true;
+	obj2->collider.Colliding = true;
+	return true; 
 }
 
 bool Game::SphereBoxCollision(GameEntity * sphere, GameEntity * box)
@@ -388,7 +433,7 @@ void Game::CreatePlayer()
 	player->myPlayer->applyFric = true;
 	player->myPlayer->fricStrength = 0.4f;
 	player->myPlayer->Translate(0, 50, 10);
-	player->myPlayer->collider.skin = 8.0f;
+	player->myPlayer->collider.skin = 3.5f;
 	rend->RemoveFromRenderer(player->myPlayer->rendID);
 }
 

@@ -10,7 +10,7 @@ GameEntity::GameEntity(Renderer *r)
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
-	collider.skin = 0.0f;
+	collider.skin = 0.1f;
 	ResetGameEntity();
 }
 GameEntity::GameEntity(std::string nm, Mesh &oM, Renderer *r)
@@ -23,7 +23,7 @@ GameEntity::GameEntity(std::string nm, Mesh &oM, Renderer *r)
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
-	collider.skin = 0.0f;
+	collider.skin = 0.1f;
 	ResetGameEntity();
 }
 GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsigned int> &i, Renderer *r)
@@ -36,7 +36,7 @@ GameEntity::GameEntity(std::string nm, std::vector<Vertex> &v, std::vector<unsig
 	rendID = ((Renderer*)rend)->AddToRenderer(*this);
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
-	collider.skin = 0.0f;
+	collider.skin = 0.1f;
 	ResetGameEntity();
 }
 
@@ -49,7 +49,7 @@ GameEntity::GameEntity(std::string nm, std::string filename, Mesh::MeshType t, s
 	rendID = rend->AddToRenderer(*this);
 	color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specular = glm::vec4(2.0f, 2.0f, 2.0f, 2.0f);
-	collider.skin = 0.0f;
+	collider.skin = 0.1f;
 	ResetGameEntity();
 }
 
@@ -85,19 +85,19 @@ void GameEntity::SetWorldPos()
 		worldPos = parent->worldPos * worldPos;
 	}
 
-	collider.bbMin = transform.position - collider.boundingBox;
-	collider.bbMax = transform.position + collider.boundingBox;
-	collider.bbMin = glm::vec3(worldPos * glm::vec4(collider.bbMin,1));
-	collider.bbMax = glm::vec3(worldPos * glm::vec4(collider.bbMax,1));
+	collider.bbMin = glm::mat3(myScale) * collider.boundingBox;
+	collider.bbMax = glm::mat3(myScale) * collider.boundingBox;
+	collider.bbMin = transform.position - collider.bbMin;
+	collider.bbMax = transform.position + collider.bbMax;
 
-	float r = collider.boundingBox.x;
-	if (r < collider.boundingBox.y)
+	float r = collider.bbMax.x;
+	if (r < collider.bbMax.y)
 	{
-		r = collider.boundingBox.y;
+		r = collider.bbMax.y;
 	}
-	if (r < collider.boundingBox.y)
+	if (r < collider.bbMax.z)
 	{
-		r = collider.boundingBox.y;
+		r = collider.bbMax.z;
 	}
 	collider.radius = r;
 }

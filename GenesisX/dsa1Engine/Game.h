@@ -23,6 +23,7 @@ public:
 	void StickBullet(unsigned int i);
 	void BulletLightsOn();
 	void BulletLightsOff();
+	void GenrateWall(int width, int height, float spacing);
 	bool SphereCollision(GameEntity *obj1, GameEntity *obj2);
 	bool BoxCollision(GameEntity *obj1, GameEntity *obj2);
 	bool SphereBoxCollision(GameEntity *obj1, GameEntity *obj2);
@@ -34,6 +35,7 @@ public:
 	InputManager *input;
 	Renderer* rend;
 	Player* player;
+	GameEntity* rayGun;
 
 	bool currentMouseClick;
 	bool previousMouseClick;
