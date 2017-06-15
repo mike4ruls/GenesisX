@@ -60,7 +60,7 @@ void Renderer::Update()
 			ResetGeometry();
 
 			//Setting drawing to this render target
-			glDrawBuffer(GL_COLOR_ATTACHMENT3);
+			glDrawBuffer(GL_COLOR_ATTACHMENT4);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			//Ambient Pass
@@ -73,15 +73,6 @@ void Renderer::Update()
 			LightingPass();
 			ResetLighting();
 
-			//copying info from g_Buffer to default buffer
-			BlitInfo();
-
-			//binding default framebuffer
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			//drawing sky box
-			DrawSkyBox();
-
 		}
 		if (rendType == Forward)
 		{
@@ -91,6 +82,20 @@ void Renderer::Update()
 				FowardPass(gameObjs[i]);
 			}
 		}
+		glDrawBuffer(GL_COLOR_ATTACHMENT3);
+		glClear(GL_COLOR_BUFFER_BIT);
+		SetUpHDR();
+		HDRPass();
+		ResetHDR();
+
+		//copying info from g_Buffer to default buffer
+		BlitInfo();
+
+		//binding default framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		//drawing sky box
+		DrawSkyBox();
 	}
 
 
@@ -335,6 +340,17 @@ GLuint Renderer::CreateGeometryBuffer()
 	glBindTexture(GL_TEXTURE_2D, finText);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	//// create a new texture to render my final texture
+	glGenTextures(1, &HDRText);
+	glBindTexture(GL_TEXTURE_2D, HDRText);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 	// attaching buffers to render target
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colText, 0);
@@ -342,6 +358,7 @@ GLuint Renderer::CreateGeometryBuffer()
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, worldText, 0);
 	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, stenText, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, finText, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, HDRText, 0);
 
 	GLenum DrawBuffer[3] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, DrawBuffer);
@@ -532,6 +549,30 @@ void Renderer::ResetLighting()
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
 	glCullFace(GL_BACK);
+}
+void Renderer::SetUpHDR()
+{
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+
+	glUseProgram(shaderM->HDRProgram);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, HDRText);
+	glUniform1i(3, 0);
+
+	glUniform1f(2, 0.01f);
+}
+void Renderer::HDRPass()
+{
+	glBindVertexArray(vaoQuad);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
+void Renderer::ResetHDR()
+{
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
 }
 void Renderer::BlitInfo()
 {

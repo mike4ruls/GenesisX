@@ -15,6 +15,7 @@ public:
 	GLuint nulProgram;
 	GLuint ambProgram;
 	GLuint ligProgram;
+	GLuint HDRProgram;
 	GLuint GetProgram() const;
 
 	bool LoadShaders(const char* vFile, const char * fFile, GLuint &program);

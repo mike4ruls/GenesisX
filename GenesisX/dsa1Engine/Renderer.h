@@ -62,6 +62,10 @@ public:
 	void LightingPass();
 	void ResetLighting();
 
+	void SetUpHDR();
+	void HDRPass();
+	void ResetHDR();
+
 	void BlitInfo();
 
 	//deferred rendering variables
@@ -72,6 +76,7 @@ public:
 	GLuint normText;
 	GLuint worldText;
 	GLuint finText;
+	GLuint HDRText;
 	GLuint stenText;
 	GLuint depthBuffer;
 	GLuint vaoQuad;

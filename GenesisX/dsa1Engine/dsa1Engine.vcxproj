@@ -208,6 +208,8 @@
     <None Include="shaders\DeferredShading\lightVShader.glsl" />
     <None Include="shaders\DeferredShading\nullP.glsl" />
     <None Include="shaders\DeferredShading\nullV.glsl" />
+    <None Include="shaders\HDRShading\HDRPShader.glsl" />
+    <None Include="shaders\HDRShading\HDRVShader.glsl" />
     <None Include="shaders\InstanceShading\instancePShader.glsl" />
     <None Include="shaders\InstanceShading\instanceVShader.glsl" />
     <None Include="shaders\RegularShading\fShader.glsl" />

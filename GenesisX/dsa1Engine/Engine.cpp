@@ -115,6 +115,10 @@ bool Engine::useShader()
 	{
 		return false;
 	}
+	if (!shaderM->LoadShaders("shaders/HDRShading/HDRVShader.glsl", "shaders/HDRShading/HDRPShader.glsl", shaderM->HDRProgram))
+	{
+		return false;
+	}
 	glUseProgram(shaderM->GetProgram());
 	return true;
 }

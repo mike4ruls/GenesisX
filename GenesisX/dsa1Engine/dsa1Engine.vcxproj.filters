@@ -28,6 +28,9 @@
     <Filter Include="Shaders\SkyBoxShading">
       <UniqueIdentifier>{995684ef-8a44-42ff-816c-6891162b8243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\HDRShading">
+      <UniqueIdentifier>{f7fa4bcd-0a94-4412-b208-b68989534335}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -180,5 +183,11 @@
     </None>
     <None Include="packages.config" />
     <None Include="ClassDiagram2.cd" />
+    <None Include="shaders\HDRShading\HDRPShader.glsl">
+      <Filter>Shaders\HDRShading</Filter>
+    </None>
+    <None Include="shaders\HDRShading\HDRVShader.glsl">
+      <Filter>Shaders\HDRShading</Filter>
+    </None>
   </ItemGroup>
 </Project>
