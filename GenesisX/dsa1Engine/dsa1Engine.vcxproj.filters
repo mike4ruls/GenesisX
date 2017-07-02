@@ -31,6 +31,9 @@
     <Filter Include="Shaders\HDRShading">
       <UniqueIdentifier>{f7fa4bcd-0a94-4412-b208-b68989534335}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\BloomShading">
+      <UniqueIdentifier>{7e67f91b-fba1-4258-b532-dd628152fc89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -188,6 +191,18 @@
     </None>
     <None Include="shaders\HDRShading\HDRVShader.glsl">
       <Filter>Shaders\HDRShading</Filter>
+    </None>
+    <None Include="shaders\BloomShading\BlurPShader.glsl">
+      <Filter>Shaders\BloomShading</Filter>
+    </None>
+    <None Include="shaders\BloomShading\BlurVShader.glsl">
+      <Filter>Shaders\BloomShading</Filter>
+    </None>
+    <None Include="shaders\BloomShading\BrightnessPShader.glsl">
+      <Filter>Shaders\BloomShading</Filter>
+    </None>
+    <None Include="shaders\BloomShading\BrightnessVShader.glsl">
+      <Filter>Shaders\BloomShading</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -40,6 +40,10 @@ public:
 	Mesh(std::string filename, MeshType m, std::string file);
 	~Mesh();
 
+	//void CreateZZZFile();
+	//void LoadZZZFile();
+	//void SaveZZZFile();
+
 	void CreateBuffer();
 	void CreateModelLoadingBuffer(std::vector<glm::vec3> pos, std::vector<glm::vec2> uv, std::vector<glm::vec3> nor);
 

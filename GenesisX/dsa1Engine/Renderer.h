@@ -66,6 +66,18 @@ public:
 	void HDRPass();
 	void ResetHDR();
 
+	void SetUpBrightness();
+	void BrightnessPass();
+	void ResetBrightness();
+
+	void SetUpBlur();
+	void BlurPass();
+	void ResetBlur();
+
+	void SetUpBloom();
+	void BloomPass();
+	void ResetBloom();
+
 	void BlitInfo();
 
 	//deferred rendering variables
@@ -77,6 +89,9 @@ public:
 	GLuint worldText;
 	GLuint finText;
 	GLuint HDRText;
+	GLuint BrightnessText;
+	GLuint BloomFBO[2];
+	GLuint BloomText[2];
 	GLuint stenText;
 	GLuint depthBuffer;
 	GLuint vaoQuad;

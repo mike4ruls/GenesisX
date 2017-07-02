@@ -76,7 +76,7 @@ void main()
 	vec4 DiffuseColor = vec4(0,0,0,0);
 	vec4 SpecColor = vec4(0,0,0,0);
 	if(Diffuse > 0){
-		DiffuseColor = vec4(lightColor * 1 * Diffuse, 1.0f);
+		DiffuseColor = vec4(lightColor * 1.0f * Diffuse, 1.0f);
 		vec3 E = normalize(camPos - fragPos);
 		vec3 reflect = normalize(reflect(LightDir, norm));
 		float spec = dot(E,reflect);
@@ -89,6 +89,7 @@ void main()
 	float Att = 0.0 + linear * dist + quadratic * dist * dist;
 
 	FragColor = vec4(color,1.0) * (lighting/Att);
+
 	//FragColor = vec4(fragPos,1.0);
 	//FragColor = (lighting/Att);
 	//FragColor = vec4(1.0,1.0,1.0,1.0) * dist;

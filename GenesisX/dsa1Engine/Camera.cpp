@@ -113,19 +113,23 @@ void Camera::UpdatePlayerCam(float dt)
 	glm::mat3 R = (glm::mat3)glm::yawPitchRoll(camRot.y, camRot.x, camRot.z);
 	if (input->IsKeyDown(GLFW_KEY_A))
 	{
-		player->myPlayer->ApplyForce(-player->myPlayer->transform.right * glm::vec3(1.0f));
+		player->myPlayer->ApplyForce(glm::vec3(right.x * -1.0f, 0, right.z * -1.0f));
+		printf("Velocity- x: %f, y: %f, z %f\n", player->myPlayer->ridgidBody.velocity.x, player->myPlayer->ridgidBody.velocity.y, player->myPlayer->ridgidBody.velocity.z);
 	}
 	if (input->IsKeyDown(GLFW_KEY_D))
 	{
-		player->myPlayer->ApplyForce(player->myPlayer->transform.right * glm::vec3(1.0f));
+		player->myPlayer->ApplyForce(glm::vec3(right.x * 1.0f,0, right.z * 1.0f));
+		printf("Velocity- x: %f, y: %f, z %f\n", player->myPlayer->ridgidBody.velocity.x, player->myPlayer->ridgidBody.velocity.y, player->myPlayer->ridgidBody.velocity.z);
 	}
 	if (input->IsKeyDown(GLFW_KEY_W))
 	{
-		player->myPlayer->ApplyForce(player->myPlayer->transform.forward * glm::vec3(1.0f));
+		player->myPlayer->ApplyForce(glm::vec3(foward.x * 1.0f, 0, foward.z * 1.0f));
+		printf("Velocity- x: %f, y: %f, z %f\n", player->myPlayer->ridgidBody.velocity.x, player->myPlayer->ridgidBody.velocity.y, player->myPlayer->ridgidBody.velocity.z);
 	}
 	if (input->IsKeyDown(GLFW_KEY_S))
 	{
-		player->myPlayer->ApplyForce(-player->myPlayer->transform.forward * glm::vec3(1.0f));
+		player->myPlayer->ApplyForce(glm::vec3(foward.x * -1.0f, 0, foward.z * -1.0f));
+		printf("Velocity- x: %f, y: %f, z %f\n", player->myPlayer->ridgidBody.velocity.x, player->myPlayer->ridgidBody.velocity.y, player->myPlayer->ridgidBody.velocity.z);
 	}
 	if (input->IsKeyDown(GLFW_KEY_SPACE))
 	{

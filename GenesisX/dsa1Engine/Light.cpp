@@ -21,7 +21,7 @@ Light::Light(char* name, float inten,glm::vec3 lightP, glm::vec3 lightD, Rendere
 
 	//calculating a radius based on attenuation variables
 	myLight.linear = 0.0;
-	myLight.quadratic = 0.1f;
+	myLight.quadratic = 0.005f;
 	myLight.lightRadius = CalcRadius();
 	//printf("%f", myLight.lightRadius);
 

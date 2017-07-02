@@ -68,6 +68,10 @@ void GameEntity::Update()
 	if(applyFric)
 	{
 		CalculateFric();
+		//printf("Fric- x: %f, y: %f, z %f\n", ridgidBody.friction.x, ridgidBody.friction.y, ridgidBody.friction.z);
+		//printf("Foward- x: %f, y: %f, z %f\n", transform.forward.x, transform.forward.y, transform.forward.z);
+		//printf("Right- x: %f, y: %f, z %f\n", transform.right.x, transform.right.y, transform.right.z);
+		//printf("Up- x: %f, y: %f, z %f\n", transform.up.x, transform.up.y, transform.up.z);
 	}
 	UpdateVelocity();
 	//SetDirection();
@@ -105,8 +109,8 @@ void GameEntity::ResetGameEntity()
 {
 	worldPos = glm::mat4(1.0f);
 	applyGrav = false;
-	maxSpeed = 0.3f;
-	fricStrength = 0.1f;
+	maxSpeed = 0.6f;
+	fricStrength = 10.0f;
 	gravity = {0,-1.0f,0};
 
 	transform.position = {0.0f,0.0f,0.0f};
@@ -274,10 +278,10 @@ void GameEntity::ApplyGravity()
 
 void GameEntity::CalculateFric()
 {
-	if (glm::length(ridgidBody.velocity) <= 0.001f)
+	if (glm::abs(glm::length(ridgidBody.velocity)) <= 0.01f)
 	{
-		//ridgidBody.velocity = { 0.0f,0.0f,0.0f };
-		ridgidBody.friction = { 0.0f,0.0f,0.0f };
+		ridgidBody.velocity = { 0.0f,0.0f,0.0f };
+		//ridgidBody.friction = { 0.0f,0.0f,0.0f };
 		return;
 	}
 
@@ -291,7 +295,7 @@ void GameEntity::UpdateVelocity()
 {
 	
 	ridgidBody.velocity += ridgidBody.acceleration * Engine::time.dt;
-	ridgidBody.velocity = glm::clamp(ridgidBody.velocity, -1.0f, maxSpeed);
+	ridgidBody.velocity = glm::clamp(ridgidBody.velocity, -maxSpeed, maxSpeed);
 	ridgidBody.acceleration = { 0.0f,0.0f,0.0f };
 
 	if (glm::length(ridgidBody.velocity) <= 0.001f && glm::length(ridgidBody.velocity) >= -0.001f)

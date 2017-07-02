@@ -67,7 +67,8 @@ void Renderer::Update()
 			SetUpAmbient();
 			AmbientPass();
 			ResetAmbient();
-
+			
+			//glClear(GL_COLOR_BUFFER_BIT);
 			//Lighting Pass
 			SetUpLighting();
 			LightingPass();
@@ -82,11 +83,27 @@ void Renderer::Update()
 				FowardPass(gameObjs[i]);
 			}
 		}
+		//drawing sky box
+		DrawSkyBox();
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
+		SetUpBrightness();
+		BrightnessPass();
+		ResetBrightness();
+
+		SetUpBlur();
+		BlurPass();
+		ResetBlur();
+		
 		glDrawBuffer(GL_COLOR_ATTACHMENT3);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
 		SetUpHDR();
 		HDRPass();
 		ResetHDR();
+		//
+		//DrawSkyBox();
+
+
 
 		//copying info from g_Buffer to default buffer
 		BlitInfo();
@@ -94,8 +111,7 @@ void Renderer::Update()
 		//binding default framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//drawing sky box
-		DrawSkyBox();
+
 	}
 
 
@@ -351,6 +367,31 @@ GLuint Renderer::CreateGeometryBuffer()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
+	glGenTextures(1, &BrightnessText);
+	glBindTexture(GL_TEXTURE_2D, BrightnessText);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glGenFramebuffers(2, BloomFBO);
+	glGenTextures(2, BloomText);
+	for (int i = 0; i < 2; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, BloomFBO[i]);
+		glBindTexture(GL_TEXTURE_2D, BloomText[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, BloomText[i], 0);
+
+		piz = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		if (piz != za) { return false; }
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, newFrameBuffer);
 	// attaching buffers to render target
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, colText, 0);
@@ -359,6 +400,7 @@ GLuint Renderer::CreateGeometryBuffer()
 	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, stenText, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, finText, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, HDRText, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, BrightnessText, 0);
 
 	GLenum DrawBuffer[3] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, DrawBuffer);
@@ -557,7 +599,13 @@ void Renderer::SetUpHDR()
 
 	glUseProgram(shaderM->HDRProgram);
 
+	glActiveTexture(GL_TEXTURE1);
+	////glBindTexture(GL_TEXTURE_2D, HDRText);
+	glBindTexture(GL_TEXTURE_2D, BloomText[0]);
+	glUniform1i(4, 1);
+
 	glActiveTexture(GL_TEXTURE0);
+	////glBindTexture(GL_TEXTURE_2D, HDRText);
 	glBindTexture(GL_TEXTURE_2D, HDRText);
 	glUniform1i(3, 0);
 
@@ -574,6 +622,66 @@ void Renderer::ResetHDR()
 	glDepthMask(GL_TRUE);
 	glEnable(GL_DEPTH_TEST);
 }
+void Renderer::SetUpBrightness()
+{
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+
+	glUseProgram(shaderM->BriProgram);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, HDRText);
+	glUniform1i(2, 0);
+}
+void Renderer::BrightnessPass()
+{
+	glBindVertexArray(vaoQuad);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+}
+void Renderer::ResetBrightness()
+{
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+}
+void Renderer::SetUpBlur()
+{
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+
+	glUseProgram(shaderM->BluProgram);
+}
+void Renderer::BlurPass()
+{
+	bool horizontal = true;
+	bool first_Iteration = true;
+	int amount = 20;
+	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	for (int i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, BloomFBO[horizontal]);
+		glUniform1f(3, horizontal);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, first_Iteration ? BrightnessText : BloomText[!horizontal]);
+
+		glBindVertexArray(vaoQuad);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+
+		horizontal = !horizontal;
+		//horizontal ? printf("TRUE\n") : printf("FALSE\n");
+		if (first_Iteration) {
+			first_Iteration = false;
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, g_Buffer);
+}
+void Renderer::ResetBlur()
+{
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+}
+
 void Renderer::BlitInfo()
 {
 	int width = *wid;

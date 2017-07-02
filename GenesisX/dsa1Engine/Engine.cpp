@@ -35,8 +35,8 @@ bool Engine::Init()
 	//Engine::LoadMesh("DestinyIsland", "models/DestinyIsland/level/di00_01.obj", Mesh::MultipleMesh, "models/DestinyIsland/level/");
 	//Engine::LoadMesh("TraverseTown", "models/TraverseTown/level/tw00_01.obj", Mesh::MultipleMesh, "models/TraverseTown/level/");
 	Engine::LoadMesh("RayGun", "models/raygun.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("HaloSword", "models/HaloSword.obj", Mesh::SingleMesh, "");
-	Engine::LoadMesh("Teapot", "models/teapot.obj", Mesh::SingleMesh, "");
+	//Engine::LoadMesh("HaloSword", "models/HaloSword.obj", Mesh::SingleMesh, "");
+	//Engine::LoadMesh("Teapot", "models/teapot.obj", Mesh::SingleMesh, "");
 	Engine::LoadMesh("Sphere", "models/sphere.obj", Mesh::SingleMesh, "");
 	Engine::LoadMesh("Box", "models/box.obj", Mesh::SingleMesh, "");
 	Engine::LoadMesh("Plane", "models/plane.obj", Mesh::SingleMesh, "");
@@ -116,6 +116,14 @@ bool Engine::useShader()
 		return false;
 	}
 	if (!shaderM->LoadShaders("shaders/HDRShading/HDRVShader.glsl", "shaders/HDRShading/HDRPShader.glsl", shaderM->HDRProgram))
+	{
+		return false;
+	}
+	if (!shaderM->LoadShaders("shaders/BloomShading/BrightnessVShader.glsl", "shaders/BloomShading/BrightnessPShader.glsl", shaderM->BriProgram))
+	{
+		return false;
+	}
+	if (!shaderM->LoadShaders("shaders/BloomShading/BlurVShader.glsl", "shaders/BloomShading/BlurPShader.glsl", shaderM->BluProgram))
 	{
 		return false;
 	}

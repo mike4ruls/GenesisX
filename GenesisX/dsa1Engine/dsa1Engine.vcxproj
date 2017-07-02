@@ -200,6 +200,10 @@
   <ItemGroup>
     <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
+    <None Include="shaders\BloomShading\BlurPShader.glsl" />
+    <None Include="shaders\BloomShading\BlurVShader.glsl" />
+    <None Include="shaders\BloomShading\BrightnessPShader.glsl" />
+    <None Include="shaders\BloomShading\BrightnessVShader.glsl" />
     <None Include="shaders\DeferredShading\ambientPShader.glsl" />
     <None Include="shaders\DeferredShading\ambientVShader.glsl" />
     <None Include="shaders\DeferredShading\geometryPShader.glsl" />
